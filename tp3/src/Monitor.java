@@ -116,7 +116,17 @@ public class Monitor {
         if (packetCounter == dataNumber) {
             System.out.println ("Deberia terminar todito. A implementar \n");
         }
+
+        try {
+            if (verifyMInvariants ()) {
+                lock.unlock ();
+                return valueToReturn;
+            }
+        } catch (Exception e1) {
+            e1.printStackTrace ();
+            System.exit (1);
+        }
         lock.unlock ();
-        return valueToReturn;
+        return -1;
     }
 }

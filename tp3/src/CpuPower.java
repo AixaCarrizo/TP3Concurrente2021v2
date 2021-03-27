@@ -17,7 +17,7 @@ public class CpuPower extends Thread {
         while (true) {
             monitor.shoot (11 - cpunumber * 4);  // T6 y T13 (Index: 11 y 7)
             monitor.shoot (12 - cpunumber * 4); // T7 y T14 (Index: 12 y 8)
-            monitor.shoot (1 + cpunumber); // Apago CPU
+            monitor.shoot (1 + cpunumber); // Apaga CPU
         }
     }
 }
