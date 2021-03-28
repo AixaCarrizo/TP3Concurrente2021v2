@@ -6,15 +6,15 @@ import java.lang.String;
 public class Main {
     public static CpuBuffer buffer1 = new CpuBuffer ();
     public static CpuBuffer buffer2 = new CpuBuffer ();
-    private final static int dataNumber = 100;
+    private final static int dataNumber = 300;
 
     private final static Monitor monitor = new Monitor (buffer1, buffer2, dataNumber);
 
 
     public static void main (String[] args) {
         GenData gd = new GenData (monitor, buffer1, buffer2, 50, dataNumber);
-        CpuWork cpu1 = new CpuWork (monitor, buffer1, buffer2, 100, 1);
-        CpuWork cpu2 = new CpuWork (monitor, buffer1, buffer2, 100, 2);
+        CpuWork cpu1 = new CpuWork (monitor, buffer1, buffer2, 50, 1);
+        CpuWork cpu2 = new CpuWork (monitor, buffer1, buffer2, 50, 2);
         CpuPower cpu1_power = new CpuPower (monitor, 1);
         CpuPower cpu2_power = new CpuPower (monitor, 2);
         CpuKeep cpu1_keep = new CpuKeep (monitor, 1);
@@ -43,7 +43,7 @@ public class Main {
         }
 
         try {
-            File file = new File ("prueba.txt");
+            File file = new File ("./prueba.txt");
             // Si el archivo no existe es creado
             if (!file.exists ()) {
                 file.createNewFile ();

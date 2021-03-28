@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="28e40359-25fb-4d8f-9a52-21b7776d5a6f" name="Default Changelist" comment="" />
+    <list default="true" id="28e40359-25fb-4d8f-9a52-21b7776d5a6f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tp3/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/tp3/src/Main.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,7 +23,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../TP3Concurrente2021" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Descargas/TP3Concurrente2021v2" />
   </component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application">
@@ -57,7 +60,8 @@
       <workItem from="1616823478881" duration="492000" />
       <workItem from="1616823986140" duration="1600000" />
       <workItem from="1616903134299" duration="226000" />
-      <workItem from="1616903387050" duration="5635000" />
+      <workItem from="1616903387050" duration="6008000" />
+      <workItem from="1616909453592" duration="830000" />
     </task>
     <servers />
   </component>
