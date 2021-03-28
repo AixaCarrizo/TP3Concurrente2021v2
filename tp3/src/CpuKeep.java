@@ -11,11 +11,11 @@ public class CpuKeep extends Thread {
     @Override
     public void run () {
         super.run ();
-        int flag;
+        int flag = 0;
 
-        while (true) {
-            monitor.shoot (10 - cpunumber * 4); // T5 y T12 (Index: 10 y 6)
+        while (flag != -1) {
+            flag = monitor.shoot (10 - cpunumber * 4); // T5 y T12 (Index: 10 y 6)
         }
-        //System.out.println (("CPUController" + (cpunumber + 1) + ": Good Bye!"));
+        System.out.println (("CpuKepp" + (cpunumber + 1) + " : Good Bye!"));
     }
 }

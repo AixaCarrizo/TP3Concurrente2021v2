@@ -32,12 +32,12 @@ public class GenData extends Thread {
                 else
                     buffer2.add ("Dato numero: " + nroData); // Agrego un elemento al buffer (Cambiar por buffer2)
 
-                System.out.println ("GenData       : Genero dato numero " + nroData);
+                System.out.println ("GenData  : Genero dato numero " + nroData);
                 nroData++;
             }
         } catch (InterruptedException e) {
             e.printStackTrace ();
         }
-        System.out.println (("GenData       : Good Bye!"));
+        System.out.println (("GenData  : Good Bye!"));
     }
 }

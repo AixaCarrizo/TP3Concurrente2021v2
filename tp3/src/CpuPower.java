@@ -12,12 +12,16 @@ public class CpuPower extends Thread {
     @Override
     public void run () {
         super.run ();
-        int flag;
+        int flag = 0;
 
-        while (true) {
-            monitor.shoot (11 - cpunumber * 4);  // T6 y T13 (Index: 11 y 7)
+        while (flag != -1) {
+            if(monitor.shoot (11 - cpunumber * 4) == -1)  // T6 y T13 (Index: 11 y 7)
+                break;
             monitor.shoot (12 - cpunumber * 4); // T7 y T14 (Index: 12 y 8)
-            monitor.shoot (1 + cpunumber); // Apaga CPU
+            System.out.println (("CpuPower" + (cpunumber + 1) + ": Cpu ON"));
+            flag = monitor.shoot (1 + cpunumber); // Apaga CPU
+            System.out.println (("CpuPower" + (cpunumber + 1) + ": Cpu OFF"));
         }
+        System.out.println (("CpuPower" + (cpunumber + 1) + ": Good Bye!"));
     }
 }

@@ -19,9 +19,11 @@ public class CpuWork extends Thread {
     public void run () {
         super.run ();
         int tasks = 1;
+        int flag = 0;
 
-        while (true) {
-            monitor.shoot (9 + cpunumber * 5); // T2 y T9 (Index: 9 y 14)
+        while (flag != -1) {
+            if(monitor.shoot (9 + cpunumber * 5) == -1) // T2 y T9 (Index: 9 y 14)
+                break;
 
             if (cpunumber == 0)
                 buffer1.remove ();   // Saco un elemento del buffer 1
@@ -33,10 +35,10 @@ public class CpuWork extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace ();
             }
-            monitor.shoot (3 + cpunumber); // Disparo service_rate1-2 (Index:  3 y 4);
-            System.out.println ("CPU" + (cpunumber + 1) + "          : Realizo su tarea numero " + tasks);
+            flag = monitor.shoot (3 + cpunumber); // Disparo service_rate1-2 (Index:  3 y 4);
+            System.out.println ("CpuWork" + (cpunumber + 1) + " : Realizo su tarea numero " + tasks);
             tasks++;
         }
+        System.out.println (("CpuWork" + (cpunumber + 1) + " : Good Bye!"));
     }
-    //System.out.println (("CPU" + (cpunumber + 1) + "          : Good Bye!"));
 }

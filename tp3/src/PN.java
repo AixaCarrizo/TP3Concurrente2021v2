@@ -8,7 +8,7 @@ public class PN {
     private int[] E;
     private int estados; //N
     private int transiciones; //M
-    private static boolean print = true;
+    private static boolean print = false;
 
     /*
     // N = cant de estados , M = cant de transiciones
@@ -259,6 +259,15 @@ public class PN {
             else aux[m] = 0; // Si no pongo el else, quedan los unos de la operacion anterior
         }
         return aux;
+    }
+
+    public boolean ifEnd () {
+        int[] Minitial = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1};
+        for (int n = 0; n < estados; n++) {
+            if (M[n] != Minitial[n])
+                return false;
+        }
+        return true;
     }
 
 

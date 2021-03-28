@@ -10,6 +10,7 @@ public class Monitor {
     //private Condition[] quesOfWait; //si esta vacio el buffer
     private List<Condition> quesWait = new ArrayList<Condition> ();
     private boolean[] boolQuesWait = new boolean[numberTransitions];
+    private boolean end = false;
     private int packetCounter;
     private final Politica politic;
     private String transitions = new String ("");
@@ -18,7 +19,7 @@ public class Monitor {
     private final CpuBuffer buffer1;
     private final CpuBuffer buffer2;
     private static final String[] numTransitions = {"T0", "T4", "T11", "T3", "T10", "TA", "T12", "T13", "T14", "T2", "T5", "T6", "T7", "T8", "T9"};
-    private static final boolean print = true;
+    private static final boolean print = false;
 
     public Monitor (CpuBuffer buffer1, CpuBuffer buffer2, int dataNumber) {
         this.buffer1 = buffer1;
@@ -84,9 +85,19 @@ public class Monitor {
         int aux[] = pn.getSensitized ();
         for (int i = 0; i < 15; i++) {
             if (aux[i] == 1 && boolQuesWait[i]) {
-                System.out.println ("Despertar a: " + numTransitions[i] + "\n");
+                //System.out.println ("Despertar a: " + numTransitions[i] + "\n");
                 quesWait.get (i).signal ();
-                break;
+                return;
+            }
+        }
+
+        if (packetCounter == dataNumber && pn.ifEnd ()) {
+            System.out.println ("Monitor  : Se cumplio condicion de finalizacion");
+            end = true;
+            for (int i = 0; i < 15; i++) {
+                if (boolQuesWait[i]) {
+                    quesWait.get (i).signal ();
+                }
             }
         }
     }
@@ -99,9 +110,12 @@ public class Monitor {
         shoot[index] = 1;
         while (true) {
             if (!(pn.isPos (shoot))) {
+                if (end)
+                    break;
+                printSave (index, valueToReturn);
+                boolQuesWait[index] = true;
+                signalPolitic ();
                 try {
-                    printSave (index, valueToReturn);
-                    boolQuesWait[index] = true;
                     quesWait.get (index).await ();
                 } catch (InterruptedException e1) {
                     e1.printStackTrace ();
@@ -112,15 +126,14 @@ public class Monitor {
                 printSave (index, valueToReturn);
                 signalPolitic ();
                 if (index == 0) {
+                    packetCounter++;
                     valueToReturn = politic.bufferPolitic ();
                 }
                 break;
             }
         }
-
-        if (packetCounter == dataNumber) {
-            System.out.println ("Deberia terminar todito. A implementar \n");
-        }
+        if (end)
+            valueToReturn = -1;
 
         try {
             if (verifyMInvariants ()) {
