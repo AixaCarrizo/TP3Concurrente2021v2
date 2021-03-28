@@ -125,16 +125,16 @@ public class PN {
             this.E[m] = 1;
 
             for (int n = 0; n < estados; n++) {
-                if (M[n] - Ineg[n][m]  < 0) {
+                if (M[n] - Ineg[n][m] < 0) {
                     E[m] = 0;
                     break;
                 }
             }
         }
-        // TODO: COMPROBAR SI ESTA VIEN ACA
-        if(M[2] >= 10)
+        // TODO: COMPROBAR SI ESTA BIEN ACA
+        if (M[2] >= 10)
             E[5] = 0;
-        if(M[3] >= 10)
+        if (M[3] >= 10)
             E[13] = 0;
 
         // System.out.println("E: \n");
@@ -214,23 +214,51 @@ public class PN {
     }
 
 
-    public int[] getSensitized(){
+    public int[] getSensitized () {
         for (int m = 0; m < transiciones; m++) {
             this.E[m] = 1;
 
             for (int n = 0; n < estados; n++) {
-                if (M[n] - Ineg[n][m]  < 0) {
+                if (M[n] - Ineg[n][m] < 0) {
                     E[m] = 0;
                     break;
                 }
             }
         }
-        // TODO: COMPROBAR SI ESTA VIEN ACA
-        if(M[2] >= 10)
+        // TODO: COMPROBAR SI ESTA BIEN ACA
+        if (M[2] >= 10)
             E[5] = 0;
-        if(M[3] >= 10)
+        if (M[3] >= 10)
             E[13] = 0;
-        return  E;
+        //return  E;
+
+
+        int temp;
+        int[] aux = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+        //Calculo B
+        for (int m = 0; m < transiciones; m++) {
+            B[m] = 0;
+            for (int n = 0; n < estados; n++) {   // Si algun numero del nuevo vector de marcado es = 1, no puedo dispararla
+                //temp = H[m][i] * Q[i];    // Sumo para obtener el nuevo vector de desensibilizado
+                temp = H[m][n] * M[n];
+                B[m] = B[m] + temp; // B = 0 -> no se puede :(
+            }
+            if (B[m] == 0) {
+                B[m] = 1;
+            } else {
+                B[m] = 0;
+            }
+        }
+
+        // System.out.println("H x m: \n");
+        // printArray(B);
+
+        for (int m = 0; m < transiciones; m++) {
+            if (B[m] * E[m] > 0) aux[m] = 1; // B and E
+            else aux[m] = 0; // Si no pongo el else, quedan los unos de la operacion anterior
+        }
+        return aux;
     }
 
 

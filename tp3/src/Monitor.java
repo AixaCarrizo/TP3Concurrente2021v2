@@ -5,9 +5,11 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.ArrayList;
 
 public class Monitor {
-    static Lock lock = new ReentrantLock ();
+    private final int numberTransitions = 15;
+    private static Lock lock = new ReentrantLock ();
     //private Condition[] quesOfWait; //si esta vacio el buffer
-    List<Condition> quesOfWait = new ArrayList<Condition> ();
+    private List<Condition> quesWait = new ArrayList<Condition> ();
+    private boolean[] boolQuesWait = new boolean[numberTransitions];
     private int packetCounter;
     private final Politica politic;
     private String transitions = new String ("");
@@ -24,8 +26,9 @@ public class Monitor {
         this.packetCounter = 0;
         this.politic = new Politica (buffer1, buffer2);
         this.dataNumber = dataNumber;
-        for (int i = 0; i < 15; i++) {
-            quesOfWait.add (lock.newCondition ());
+        for (int i = 0; i < numberTransitions; i++) {
+            quesWait.add (lock.newCondition ());
+            boolQuesWait[i] = false;
         }
     }
 
@@ -80,9 +83,10 @@ public class Monitor {
     private void signalPolitic () {
         int aux[] = pn.getSensitized ();
         for (int i = 0; i < 15; i++) {
-            if (aux[i] == 1) {
+            if (aux[i] == 1 && boolQuesWait[i]) {
                 System.out.println ("Despertar a: " + numTransitions[i] + "\n");
-                quesOfWait.get (i).signal ();
+                quesWait.get (i).signal ();
+                break;
             }
         }
     }
@@ -97,12 +101,13 @@ public class Monitor {
             if (!(pn.isPos (shoot))) {
                 try {
                     printSave (index, valueToReturn);
-                    //signalPolitic ();
-                    quesOfWait.get (index).await ();
+                    boolQuesWait[index] = true;
+                    quesWait.get (index).await ();
                 } catch (InterruptedException e1) {
                     e1.printStackTrace ();
                 }
             } else {
+                boolQuesWait[index] = false;
                 valueToReturn = 1;
                 printSave (index, valueToReturn);
                 signalPolitic ();
