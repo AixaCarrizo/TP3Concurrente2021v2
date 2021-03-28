@@ -2,17 +2,43 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.lang.String;
+import java.util.ArrayList;
 
 public class Main {
-    public static CpuBuffer buffer1 = new CpuBuffer ();
-    public static CpuBuffer buffer2 = new CpuBuffer ();
-    private final static int dataNumber = 300;
+    private final static int dataNumber = 5;
+    private static ArrayList<CPUProcess> processThread= new ArrayList<CPUProcess>();
 
-    private final static Monitor monitor = new Monitor (buffer1, buffer2, dataNumber);
+    private final static MonitorV2 monitor = new MonitorV2 (dataNumber);
+
+    private static void initProcess(){
+        try{
+            monitor.addFinalTransitions(3);
+            monitor.addFinalTransitions(4);
+            monitor.addInitialTransitions(0);
+
+            for (int i = 0; i<15;i++) {
+                processThread.add(new CPUProcess(monitor, i));
+            }
+
+            for( CPUProcess item : processThread ) {
+                item.start();
+            }
+
+            for( CPUProcess item : processThread ) {
+                item.join();
+            }
+
+        } catch (Exception e ){
+            System.out.println(e);
+        }
+    }
 
 
     public static void main (String[] args) {
-        GenData gd = new GenData (monitor, buffer1, buffer2, 50, dataNumber);
+
+        initProcess();
+
+      /*  GenData gd = new GenData (monitor, buffer1, buffer2, 50, dataNumber);
         CpuWork cpu1 = new CpuWork (monitor, buffer1, buffer2, 50, 1);
         CpuWork cpu2 = new CpuWork (monitor, buffer1, buffer2, 50, 2);
         CpuPower cpu1_power = new CpuPower (monitor, 1);
@@ -27,9 +53,8 @@ public class Main {
         gd.start ();
         cpu1.start ();
         cpu2.start ();
-        log.start ();
-
-        try {
+        log.start ();*/
+      /*  try {
             cpu1_power.join ();
             cpu2_power.join ();
             cpu1_keep.join ();
@@ -38,9 +63,13 @@ public class Main {
             cpu1.join ();
             cpu2.join ();
             log.join ();
+
+
+            cpuProcess.join();
+
         } catch (InterruptedException e) {
             e.printStackTrace ();
-        }
+        }*/
 
         try {
             File file = new File ("./prueba.txt");
@@ -56,4 +85,7 @@ public class Main {
             e.printStackTrace ();
         }
     }
+
+
+
 }

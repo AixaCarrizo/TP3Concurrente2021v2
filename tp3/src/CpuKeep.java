@@ -1,9 +1,9 @@
 public class CpuKeep extends Thread {
 
-    private final Monitor monitor;
+    private final MonitorV2 monitor;
     private final int cpunumber;
 
-    public CpuKeep (Monitor monitor, int cpuNumber) {
+    public CpuKeep (MonitorV2 monitor, int cpuNumber) {
         this.monitor = monitor;
         this.cpunumber = cpuNumber - 1;
     }

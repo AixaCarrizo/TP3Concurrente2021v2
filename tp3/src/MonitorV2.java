@@ -1,38 +1,47 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.ArrayList;
 
-public class Monitor {
+public class MonitorV2 {
+
     private final int numberTransitions = 15;
     private static Lock lock = new ReentrantLock ();
-    //private Condition[] quesOfWait; //si esta vacio el buffer
     private List<Condition> quesWait = new ArrayList<Condition> ();
     private boolean[] boolQuesWait = new boolean[numberTransitions];
-    private boolean end = false;
-    private int packetCounter;
-    private final Politica politic;
-    private String transitions = new String ("");
-    private final int dataNumber;
-    private final PN pn = new PN ();
-    private final CpuBuffer buffer1;
-    private final CpuBuffer buffer2;
-    private static final String[] numTransitions = {"T0", "T4", "T11", "T3", "T10", "TA", "T12", "T13", "T14", "T2", "T5", "T6", "T7", "T8", "T9"};
-    private static final boolean print = false;
 
-    public Monitor (CpuBuffer buffer1, CpuBuffer buffer2, int dataNumber) {
-        this.buffer1 = buffer1;
-        this.buffer2 = buffer2;
-        this.packetCounter = 0;
-        this.politic = new Politica (buffer1, buffer2);
-        this.dataNumber = dataNumber;
+    private final PN pn = new PN ();
+    private int packageNumber, packageCounter, initialCounter;
+    private ArrayList<Integer> finalTransitions, initialTransitions;
+
+    private boolean end, initialEnd = false;
+    private String transitions = "";
+    private static final String[] numTransitions = {"T0", "T4", "T11", "T3", "T10", "TA", "T12", "T13", "T14", "T2", "T5", "T6", "T7", "T8", "T9"};
+    private static final boolean print = true;
+
+
+    public MonitorV2(int packageNumber) {
+        initConditions();
+        this.packageNumber = packageNumber;
+        this.finalTransitions = new ArrayList<>();
+        this.initialTransitions = new ArrayList<>();
+    }
+
+    private void initConditions() {
         for (int i = 0; i < numberTransitions; i++) {
             quesWait.add (lock.newCondition ());
             boolQuesWait[i] = false;
         }
     }
 
+    public void addFinalTransitions(int finalTransitions) {
+        this.finalTransitions.add(finalTransitions);
+    }
+
+    public void addInitialTransitions(int initialTransitions) {
+        this.initialTransitions.add(initialTransitions);
+    }
 
     /**
      * T0: Arrival_rate
@@ -44,7 +53,6 @@ public class Monitor {
      * T6: T6
      * T7: T7
      */
-
     public String getTransitions () {
         return transitions;
     }
@@ -81,69 +89,98 @@ public class Monitor {
             transitions += numTransitions[index];
     }
 
-    private void signalPolitic () {
+    private void iMSpecial(Integer index){
+        if ( initialTransitions.contains(index)){
+            System.out.println("I'm initial boss, bro");
+
+            initialCounter++;
+            if( initialCounter == packageNumber ) this.initialEnd = true;
+        }
+
+        if ( finalTransitions.contains(index)){
+            System.out.println("I'm final boss, bro");
+
+            packageCounter++;
+            if ( packageCounter == packageNumber ) this.end = true;
+        }
+    }
+
+    private void signalPoliticV2() {
         int aux[] = pn.getSensitized ();
         for (int i = 0; i < 15; i++) {
             if (aux[i] == 1 && boolQuesWait[i]) {
-                //System.out.println ("Despertar a: " + numTransitions[i] + "\n");
+                System.out.println("Wakeup: " + i);
+
                 quesWait.get (i).signal ();
                 return;
             }
         }
 
-        if (packetCounter == dataNumber && pn.ifEnd ()) {
-            System.out.println ("Monitor  : Se cumplio condicion de finalizacion");
-            end = true;
-            for (int i = 0; i < 15; i++) {
-                if (boolQuesWait[i]) {
-                    quesWait.get (i).signal ();
-                }
-            }
+        System.out.println("Anyone is here");
+    }
+
+    private void showBoolQuesWait(){
+        int aux = 0;
+        for ( boolean item : boolQuesWait ){
+            System.out.println("aux:" + aux++ + "    " + item);
         }
     }
 
     public int shoot (int index) {  //Dispara una transicion (index) devuelve 1 si pudo hacerla y 0 si no
         lock.lock ();
-        int valueToReturn = 0;
 
         int[] shoot = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         shoot[index] = 1;
+
         while (true) {
             if (!(pn.isPos (shoot))) {
-                if (end)
-                    break;
-                printSave (index, valueToReturn);
+                System.out.println("Don't shoot: " + index);
+                printSave (index, 0);
+
+                if (end) return -1;
+
                 boolQuesWait[index] = true;
-                signalPolitic ();
+                signalPoliticV2 ();
+
                 try {
+                    showBoolQuesWait();
                     quesWait.get (index).await ();
                 } catch (InterruptedException e1) {
                     e1.printStackTrace ();
                 }
+
             } else {
+                System.out.println("Shoot: " + index);
+                printSave (index, 1);
+
+                iMSpecial(index);
                 boolQuesWait[index] = false;
-                valueToReturn = 1;
-                printSave (index, valueToReturn);
-                signalPolitic ();
-                if (index == 0) {
-                    packetCounter++;
-                    valueToReturn = politic.bufferPolitic ();
-                }
+                showBoolQuesWait();
+                signalPoliticV2 ();
+
                 break;
             }
         }
-        if (end)
-            valueToReturn = -1;
+        if (end || initialEnd) {
+            System.out.println("I must end my life");
+
+            initialEnd = false;
+            return -1;
+        }
 
         try {
             if (verifyMInvariants ()) {
+                System.out.println("Mi invariantes");
+
                 lock.unlock ();
-                return valueToReturn;
+                return 0;
             }
         } catch (Exception e1) {
             e1.printStackTrace ();
             System.exit (1);
         }
+
+        System.out.println("Unlock shoot: " + index);
         lock.unlock ();
         return -1;
     }

@@ -1,10 +1,10 @@
 
 public class CpuPower extends Thread {
 
-    private final Monitor monitor;
+    private final MonitorV2 monitor;
     private final int cpunumber;
 
-    public CpuPower (Monitor monitor, int cpuNumber) {
+    public CpuPower (MonitorV2 monitor, int cpuNumber) {
         this.monitor = monitor;
         this.cpunumber = cpuNumber - 1;
     }

@@ -1,12 +1,12 @@
 public class GenData extends Thread {
 
-    private final Monitor monitor;
+    private final MonitorV2 monitor;
     private final CpuBuffer buffer1;
     private final CpuBuffer buffer2;
     private final int arrivalRate;
     private final int dataNumber;
 
-    public GenData (Monitor monitor, CpuBuffer buffer1, CpuBuffer buffer2, int arrivalRate, int dataNumber) {
+    public GenData (MonitorV2 monitor, CpuBuffer buffer1, CpuBuffer buffer2, int arrivalRate, int dataNumber) {
         this.monitor = monitor;
         this.buffer1 = buffer1;
         this.arrivalRate = arrivalRate;

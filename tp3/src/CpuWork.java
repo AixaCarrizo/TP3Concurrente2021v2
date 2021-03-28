@@ -1,13 +1,13 @@
 public class CpuWork extends Thread {
 
-    private final Monitor monitor;
+    private final MonitorV2 monitor;
     private final CpuBuffer buffer1;
     private final CpuBuffer buffer2;
     private final int serviceRate;
     private final int cpunumber;
 
 
-    public CpuWork (Monitor monitor, CpuBuffer cpuBuffer1, CpuBuffer cpuBuffer2, int serviceRate, int cpuNumber) {
+    public CpuWork (MonitorV2 monitor, CpuBuffer cpuBuffer1, CpuBuffer cpuBuffer2, int serviceRate, int cpuNumber) {
         this.monitor = monitor;
         this.buffer1 = cpuBuffer1;
         this.serviceRate = serviceRate;
