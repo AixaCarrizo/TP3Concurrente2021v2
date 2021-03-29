@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="28e40359-25fb-4d8f-9a52-21b7776d5a6f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tp3/src/CPUProcess.java" afterDir="false" />
+    <list default="true" id="28e40359-25fb-4d8f-9a52-21b7776d5a6f" name="Default Changelist" comment="Puto Juan.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tp3/src/CpuKeep.java" beforeDir="false" afterPath="$PROJECT_DIR$/tp3/src/CpuKeep.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tp3/src/CpuPower.java" beforeDir="false" afterPath="$PROJECT_DIR$/tp3/src/CpuPower.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tp3/src/CpuWork.java" beforeDir="false" afterPath="$PROJECT_DIR$/tp3/src/CpuWork.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tp3/src/GenData.java" beforeDir="false" afterPath="$PROJECT_DIR$/tp3/src/GenData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tp3/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/tp3/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tp3/src/Monitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/tp3/src/MonitorV2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tp3/src/CPUProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/tp3/src/CPUProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tp3/src/MonitorV2.java" beforeDir="false" afterPath="$PROJECT_DIR$/tp3/src/MonitorV2.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,5 +99,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

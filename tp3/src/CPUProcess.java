@@ -26,8 +26,26 @@ public class CPUProcess extends Thread{
             for( int item : processList ) {
                 if ( monitor.shoot(item) == -1 ){
                     System.out.println("END: " + item);
-                    return;
+                    return; //TODO: Esta mal. En realidad debería remover la transicion y hacer return solo cuando no queda ninguna.
                 }
+
+                try {
+                    sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                /*switch (item){
+                    case 0:
+                    case 3:
+                    case 4:
+                        try {
+                            sleep(20);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                }*/
             }
         }
     }

@@ -108,6 +108,7 @@ public class MonitorV2 {
     private void signalPoliticV2() {
         int aux[] = pn.getSensitized ();
         for (int i = 0; i < 15; i++) {
+            System.out.println("COSO:" + i + "    " + boolQuesWait[i] + "  ---   " + aux[i] );
             if (aux[i] == 1 && boolQuesWait[i]) {
                 System.out.println("Wakeup: " + i);
 
@@ -119,11 +120,20 @@ public class MonitorV2 {
         System.out.println("Anyone is here");
     }
 
-    private void showBoolQuesWait(){
-        int aux = 0;
-        for ( boolean item : boolQuesWait ){
-            System.out.println("aux:" + aux++ + "    " + item);
+    private void finalSignalPoliticV2() {
+        for (int i = 0; i < 15; i++) {
+            quesWait.get (i).signal ();
         }
+    }
+
+    private void showBoolQuesWait(){
+        int aux[] = pn.getSensitized ();
+        int count = 0;
+        for ( boolean item : boolQuesWait ){
+            System.out.println("index:" + count + "    " + item + "  ---   " + aux[count] );
+            count++;
+        }
+        System.out.println("--------------------------------- 0 --------------------------------------------");
     }
 
     public int shoot (int index) {  //Dispara una transicion (index) devuelve 1 si pudo hacerla y 0 si no
@@ -137,10 +147,15 @@ public class MonitorV2 {
                 System.out.println("Don't shoot: " + index);
                 printSave (index, 0);
 
-                if (end) return -1;
+                if (end) {
+                    System.out.println("I must end my life 1: " + index);
+                    finalSignalPoliticV2();
+                    lock.unlock ();
+                    return -1;
+                }
 
-                boolQuesWait[index] = true;
                 signalPoliticV2 ();
+                boolQuesWait[index] = true;
 
                 try {
                     showBoolQuesWait();
@@ -162,15 +177,15 @@ public class MonitorV2 {
             }
         }
         if (end || initialEnd) {
-            System.out.println("I must end my life");
-
+            System.out.println("I must end my life 2: " + index);
+            lock.unlock ();
             initialEnd = false;
             return -1;
         }
 
         try {
             if (verifyMInvariants ()) {
-                System.out.println("Mi invariantes");
+                System.out.println("Mi invariantes: " + index);
 
                 lock.unlock ();
                 return 0;
