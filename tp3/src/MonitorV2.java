@@ -11,36 +11,24 @@ public class MonitorV2 {
     private List<Condition> quesWait = new ArrayList<Condition> ();
     private boolean[] boolQuesWait = new boolean[numberTransitions];
 
-    private final PN pn = new PN ();
-    private int packageNumber, packageCounter, initialCounter;
-    private ArrayList<Integer> finalTransitions, initialTransitions;
+    private final PN pn;
 
-    private boolean end, initialEnd = false;
+    private boolean end = false;
     private String transitions = "";
     private static final String[] numTransitions = {"T0", "T4", "T11", "T3", "T10", "TA", "T12", "T13", "T14", "T2", "T5", "T6", "T7", "T8", "T9"};
     private static final boolean print = true;
 
 
-    public MonitorV2(int packageNumber) {
-        initConditions();
-        this.packageNumber = packageNumber;
-        this.finalTransitions = new ArrayList<>();
-        this.initialTransitions = new ArrayList<>();
+    public MonitorV2 (int packageNumber) {
+        pn = new PN (packageNumber);
+        initConditions ();
     }
 
-    private void initConditions() {
+    private void initConditions () {
         for (int i = 0; i < numberTransitions; i++) {
             quesWait.add (lock.newCondition ());
             boolQuesWait[i] = false;
         }
-    }
-
-    public void addFinalTransitions(int finalTransitions) {
-        this.finalTransitions.add(finalTransitions);
-    }
-
-    public void addInitialTransitions(int initialTransitions) {
-        this.initialTransitions.add(initialTransitions);
     }
 
     /**
@@ -89,51 +77,38 @@ public class MonitorV2 {
             transitions += numTransitions[index];
     }
 
-    private void iMSpecial(Integer index){
-        if ( initialTransitions.contains(index)){
-            System.out.println("I'm initial boss, bro");
-
-            initialCounter++;
-            if( initialCounter == packageNumber ) this.initialEnd = true;
-        }
-
-        if ( finalTransitions.contains(index)){
-            System.out.println("I'm final boss, bro");
-
-            packageCounter++;
-            if ( packageCounter == packageNumber ) this.end = true;
-        }
-    }
-
-    private void signalPoliticV2() {
+    private void signalPoliticV2 () {
         int aux[] = pn.getSensitized ();
         for (int i = 0; i < 15; i++) {
-            System.out.println("COSO:" + i + "    " + boolQuesWait[i] + "  ---   " + aux[i] );
+            System.out.println ("COSO:" + i + "    " + boolQuesWait[i] + "  ---   " + aux[i]);
             if (aux[i] == 1 && boolQuesWait[i]) {
-                System.out.println("Wakeup: " + i);
-
+                System.out.println ("Wakeup: " + i);
                 quesWait.get (i).signal ();
                 return;
             }
         }
-
-        System.out.println("Anyone is here");
+        if (pn.ifEnd ()) {
+            end = true;
+            System.out.println ("I'm final boss, bro");
+            finalSignalPoliticV2 ();
+        }
     }
 
-    private void finalSignalPoliticV2() {
+    private void finalSignalPoliticV2 () {
         for (int i = 0; i < 15; i++) {
             quesWait.get (i).signal ();
+            boolQuesWait[i] = false; // TODO: Ta al pedo pero queda lindo
         }
     }
 
-    private void showBoolQuesWait(){
+    private void showBoolQuesWait () {
         int aux[] = pn.getSensitized ();
         int count = 0;
-        for ( boolean item : boolQuesWait ){
-            System.out.println("index:" + count + "    " + item + "  ---   " + aux[count] );
+        for (boolean item : boolQuesWait) {
+            System.out.println ("index:" + count + "    " + item + "  ---   " + aux[count]);
             count++;
         }
-        System.out.println("--------------------------------- 0 --------------------------------------------");
+        System.out.println ("--------------------------------- 0 --------------------------------------------");
     }
 
     public int shoot (int index) {  //Dispara una transicion (index) devuelve 1 si pudo hacerla y 0 si no
@@ -144,12 +119,11 @@ public class MonitorV2 {
 
         while (true) {
             if (!(pn.isPos (shoot))) {
-                System.out.println("Don't shoot: " + index);
+                System.out.println ("Don't shoot: " + index);
                 printSave (index, 0);
 
                 if (end) {
-                    System.out.println("I must end my life 1: " + index);
-                    finalSignalPoliticV2();
+                    System.out.println ("I must end my life: " + index);
                     lock.unlock ();
                     return -1;
                 }
@@ -157,35 +131,27 @@ public class MonitorV2 {
                 signalPoliticV2 ();
                 boolQuesWait[index] = true;
 
+                showBoolQuesWait ();
                 try {
-                    showBoolQuesWait();
                     quesWait.get (index).await ();
                 } catch (InterruptedException e1) {
                     e1.printStackTrace ();
                 }
 
             } else {
-                System.out.println("Shoot: " + index);
+                System.out.println ("Shoot: " + index);
                 printSave (index, 1);
 
-                iMSpecial(index);
                 boolQuesWait[index] = false;
-                showBoolQuesWait();
+                showBoolQuesWait ();
                 signalPoliticV2 ();
-
                 break;
             }
-        }
-        if (end || initialEnd) {
-            System.out.println("I must end my life 2: " + index);
-            lock.unlock ();
-            initialEnd = false;
-            return -1;
         }
 
         try {
             if (verifyMInvariants ()) {
-                System.out.println("Mi invariantes: " + index);
+                System.out.println ("Mi invariantes: " + index);
 
                 lock.unlock ();
                 return 0;
@@ -195,7 +161,7 @@ public class MonitorV2 {
             System.exit (1);
         }
 
-        System.out.println("Unlock shoot: " + index);
+        System.out.println ("Unlock shoot: " + index);
         lock.unlock ();
         return -1;
     }

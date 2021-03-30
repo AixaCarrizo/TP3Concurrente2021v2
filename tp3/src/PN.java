@@ -8,6 +8,8 @@ public class PN {
     private int[] E;
     private int estados; //N
     private int transiciones; //M
+    private static int dataNumber;
+    private static int packetCounter = 0;
     private static boolean print = false;
 
     /*
@@ -20,7 +22,8 @@ public class PN {
     }
      */
 
-    public PN () {
+    public PN (int dataNumber) {
+        this.dataNumber = dataNumber;
         init ();
     }
 
@@ -202,6 +205,9 @@ public class PN {
         }
 
         this.M = mPrima;
+        if (index[0] == 1) {
+            packetCounter++;
+        }
         return true;
     }
 
@@ -267,7 +273,10 @@ public class PN {
             if (M[n] != Minitial[n])
                 return false;
         }
-        return true;
+        if (packetCounter == dataNumber) {
+            return true;
+        }
+        return false;
     }
 
 

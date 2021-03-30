@@ -5,17 +5,13 @@ import java.lang.String;
 import java.util.ArrayList;
 
 public class Main {
-    private final static int dataNumber = 5;
+    private final static int dataNumber = 555;
     private static ArrayList<CPUProcess> processThread= new ArrayList<CPUProcess>();
 
     private final static MonitorV2 monitor = new MonitorV2 (dataNumber);
 
     private static void initProcess(){
         try{
-            monitor.addFinalTransitions(3);
-            monitor.addFinalTransitions(4);
-            monitor.addInitialTransitions(0);
-
             for (int i = 0; i<15;i++) {
                 processThread.add(new CPUProcess(monitor, i));
             }
