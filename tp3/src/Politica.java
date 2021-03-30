@@ -1,5 +1,5 @@
 public class Politica {
-
+/*
     private final CpuBuffer buffer1;
     private final CpuBuffer buffer2;
 
@@ -26,4 +26,5 @@ public class Politica {
         }
         return -1;
     }
+ */
 }

@@ -80,9 +80,9 @@ public class MonitorV2 {
     private void signalPoliticV2 () {
         int aux[] = pn.getSensitized ();
         for (int i = 0; i < 15; i++) {
-            System.out.println ("COSO:" + i + "    " + boolQuesWait[i] + "  ---   " + aux[i]);
+            //System.out.println ("COSO:" + i + "    " + boolQuesWait[i] + "  ---   " + aux[i]);
             if (aux[i] == 1 && boolQuesWait[i]) {
-                System.out.println ("Wakeup: " + i);
+                //System.out.println ("Wakeup: " + i);
                 quesWait.get (i).signal ();
                 return;
             }
@@ -105,7 +105,7 @@ public class MonitorV2 {
         int aux[] = pn.getSensitized ();
         int count = 0;
         for (boolean item : boolQuesWait) {
-            System.out.println ("index:" + count + "    " + item + "  ---   " + aux[count]);
+            //System.out.println ("index:" + count + "    " + item + "  ---   " + aux[count]);
             count++;
         }
         System.out.println ("--------------------------------- 0 --------------------------------------------");

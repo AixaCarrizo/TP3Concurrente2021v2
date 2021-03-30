@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class CPUProcess extends Thread{
 
     private final MonitorV2 monitor;
-    private final ArrayList<Integer> processList;
+    private ArrayList<Integer> processList;
 
     private int count = 0;
 
@@ -12,15 +12,18 @@ public class CPUProcess extends Thread{
         this.processList = processList;
     }
 
+    /*
     public CPUProcess(MonitorV2 monitor, int process){
         this.monitor = monitor;
         this.processList = new ArrayList<>();
         this.processList.add(process);
     }
+    */
 
     @Override
     public void run() {
         super.run();
+        System.out.println ("Holaaaa :): " + processList.get (0));
 
         while (true) {
             for( int item : processList ) {
@@ -35,17 +38,6 @@ public class CPUProcess extends Thread{
                     e.printStackTrace();
                 }
 
-                /*switch (item){
-                    case 0:
-                    case 3:
-                    case 4:
-                        try {
-                            sleep(20);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                }*/
             }
         }
     }

@@ -4,8 +4,9 @@ import java.io.FileWriter;
 import java.lang.String;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
-
+/*
 public class Log implements Runnable {
+
     private String contenido;
     private final CpuBuffer buff1;
     private final CpuBuffer buff2;
@@ -13,6 +14,7 @@ public class Log implements Runnable {
     private final CpuPower controller2;
     private final CpuWork cpu1;
     private final CpuWork cpu2;
+
     private final static boolean print = false;
 
     Log (CpuBuffer buffer1, CpuBuffer buffer2, CpuPower controller1, CpuPower controller2, CpuWork cpu1, CpuWork cpu2) {
@@ -24,6 +26,7 @@ public class Log implements Runnable {
         this.cpu1 = cpu1;
         this.cpu2 = cpu2;
     }
+
 
     public void EscribirContenido () {
         String estadoBuff;
@@ -77,3 +80,4 @@ public class Log implements Runnable {
     }
 
 }
+*/
