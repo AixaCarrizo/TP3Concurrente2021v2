@@ -16,7 +16,7 @@ public class MonitorV2 {
     private boolean end = false;
     private String transitions = "";
     private static final String[] numTransitions = {"T0", "T4", "T11", "T3", "T10", "TA", "T12", "T13", "T14", "T2", "T5", "T6", "T7", "T8", "T9"};
-    private static final boolean print = true;
+    private static final boolean print = false;
 
 
     public MonitorV2 (int packageNumber) {
@@ -80,9 +80,11 @@ public class MonitorV2 {
     private void signalPoliticV2 () {
         int aux[] = pn.getSensitized ();
         for (int i = 0; i < 15; i++) {
-            //System.out.println ("COSO:" + i + "    " + boolQuesWait[i] + "  ---   " + aux[i]);
+            if (print)
+                System.out.println ("COSO:" + i + "    " + boolQuesWait[i] + "  ---   " + aux[i]);
             if (aux[i] == 1 && boolQuesWait[i]) {
-                //System.out.println ("Wakeup: " + i);
+                if (print)
+                    System.out.println ("Wakeup: " + i);
                 quesWait.get (i).signal ();
                 return;
             }
@@ -105,7 +107,7 @@ public class MonitorV2 {
         int aux[] = pn.getSensitized ();
         int count = 0;
         for (boolean item : boolQuesWait) {
-            //System.out.println ("index:" + count + "    " + item + "  ---   " + aux[count]);
+            System.out.println ("index:" + count + "    " + item + "  ---   " + aux[count]);
             count++;
         }
         System.out.println ("--------------------------------- 0 --------------------------------------------");
@@ -119,19 +121,18 @@ public class MonitorV2 {
 
         while (true) {
             if (!(pn.isPos (shoot))) {
-                System.out.println ("Don't shoot: " + index);
-                printSave (index, 0);
-
                 if (end) {
                     System.out.println ("I must end my life: " + index);
                     lock.unlock ();
                     return -1;
                 }
+                System.out.println ("Don't shoot: " + index);
+                printSave (index, 0);
 
                 signalPoliticV2 ();
                 boolQuesWait[index] = true;
-
-                showBoolQuesWait ();
+                if (print)
+                    showBoolQuesWait ();
                 try {
                     quesWait.get (index).await ();
                 } catch (InterruptedException e1) {
@@ -143,7 +144,8 @@ public class MonitorV2 {
                 printSave (index, 1);
 
                 boolQuesWait[index] = false;
-                showBoolQuesWait ();
+                if (print)
+                    showBoolQuesWait ();
                 signalPoliticV2 ();
                 break;
             }

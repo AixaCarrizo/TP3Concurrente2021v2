@@ -135,6 +135,7 @@ public class PN {
             }
         }
         // TODO: COMPROBAR SI ESTA BIEN ACA
+        // Limitacion de generacion de datos (T0)
         if (packetCounter == dataNumber)
             E[0] = 0;
         if (M[2] >= 10)
@@ -223,26 +224,6 @@ public class PN {
 
 
     public int[] getSensitized () {
-        for (int m = 0; m < transiciones; m++) {
-            this.E[m] = 1;
-
-            for (int n = 0; n < estados; n++) {
-                if (M[n] - Ineg[n][m] < 0) {
-                    E[m] = 0;
-                    break;
-                }
-            }
-        }
-        // TODO: COMPROBAR SI ESTA BIEN ACA
-        if (packetCounter == dataNumber)
-            E[0] = 0;
-        if (M[2] >= 10)
-            E[5] = 0;
-        if (M[3] >= 10)
-            E[13] = 0;
-        //return  E;
-
-
         int temp;
         int[] aux = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
