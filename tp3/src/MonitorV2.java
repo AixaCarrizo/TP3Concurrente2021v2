@@ -7,8 +7,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class MonitorV2 {
 
     private final int numberTransitions = 15;
-    private static Lock lock = new ReentrantLock ();
-    private List<Condition> quesWait = new ArrayList<Condition> ();
+    private static Lock lock = new ReentrantLock();
+    private List<Condition> quesWait = new ArrayList<Condition>();
     private boolean[] boolQuesWait = new boolean[numberTransitions];
 
     private final PN pn;
@@ -19,14 +19,14 @@ public class MonitorV2 {
     private static final boolean print = false;
 
 
-    public MonitorV2 (int packageNumber) {
-        pn = new PN (packageNumber);
-        initConditions ();
+    public MonitorV2(int packageNumber) {
+        pn = new PN(packageNumber);
+        initConditions();
     }
 
-    private void initConditions () {
+    private void initConditions() {
         for (int i = 0; i < numberTransitions; i++) {
-            quesWait.add (lock.newCondition ());
+            quesWait.add(lock.newCondition());
             boolQuesWait[i] = false;
         }
     }
@@ -41,7 +41,7 @@ public class MonitorV2 {
      * T6: T6
      * T7: T7
      */
-    public String getTransitions () {
+    public String getTransitions() {
         return transitions;
     }
 
@@ -53,6 +53,13 @@ public class MonitorV2 {
     m0 + m6 = 1
     m8 + m9 = 1
     */
+    public String getBuffer()
+    {
+        return "El buffer 1 tiene "+ pn.getMarkVector()[2]+" elementos y el buffer 2 tiene "+pn.getMarkVector()[3]+" elementos.";
+
+    }
+
+
 
     private boolean verifyMInvariants () throws Exception {
         int mark[] = pn.getMarkVector ();

@@ -8,6 +8,7 @@ public class Main {
     private final static int dataNumber = 500;
     private static ArrayList<CPUProcess> processThread = new ArrayList<CPUProcess> ();
     private static ArrayList<ArrayList<Integer>> arrayTransitions = new ArrayList<ArrayList<Integer>> ();
+    private static Thread log;
 
     private final static MonitorV2 monitor = new MonitorV2 (dataNumber);
     //private final static int[][] arrayTransitions = {{10},{6},{9,3},{14,4},{0},{5},{13},{11,12,1},{7,8,2}};
@@ -42,15 +43,18 @@ public class Main {
             for (ArrayList<Integer> items : arrayTransitions) {
                 processThread.add (new CPUProcess (monitor, items));
             }
-
+            log = new Thread (new Log (processThread,monitor));
             for (CPUProcess item : processThread) {
                 item.start ();
             }
+
+            log.start();
 
             for (CPUProcess item : processThread) {
                 item.join ();
             }
 
+            log.join();
         } catch (Exception e) {
             System.out.println (e);
         }
@@ -59,6 +63,7 @@ public class Main {
 
     public static void main (String[] args) {
         initProcess ();
+
 
         try {
             File file = new File ("./prueba.txt");
@@ -70,6 +75,7 @@ public class Main {
             BufferedWriter bw = new BufferedWriter (fw);
             bw.write (monitor.getTransitions ());
             bw.close ();
+
         } catch (Exception e) {
             e.printStackTrace ();
         }
