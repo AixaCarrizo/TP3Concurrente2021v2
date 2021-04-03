@@ -6,6 +6,12 @@ public class PN {
     private int[][] Ineg;
     private int[][] H;
     private int[] E;
+
+    private Integer[] useBuffers;
+    private Integer[] isBuffer;
+    private Integer[] isGenTransition;
+    private Integer[] isAddBuffer;
+
     private int estados; //N
     private int transiciones; //M
     private static int dataNumber;
@@ -116,6 +122,10 @@ public class PN {
         this.estados = 16;
         this.transiciones = 15;
 
+        this.useBuffers       = new Integer[]{5, 13, 9, 14};
+        this.isBuffer         = new Integer[]{2, 3};
+        this.isGenTransition  = new Integer[]{0};
+        this.isAddBuffer      = new Integer[]{5, 13};
     }
 
 
@@ -264,5 +274,15 @@ public class PN {
         return false;
     }
 
+    public Integer[] getUseBuffer() {
+        return useBuffers;
+    }
 
+    public Integer[] getIsBuffer() {
+        return isBuffer;
+    }
+
+    public Integer[] getCountBuffer() {
+        return isAddBuffer;
+    }
 }

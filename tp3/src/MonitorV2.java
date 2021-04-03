@@ -1,3 +1,5 @@
+
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Condition;
@@ -5,18 +7,19 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class MonitorV2 {
-
     private final int numberTransitions = 15;
+
     private static Lock lock = new ReentrantLock ();
     private List<Condition> quesWait = new ArrayList<Condition> ();
     private boolean[] boolQuesWait = new boolean[numberTransitions];
 
+    private Log log;
     private final PN pn;
 
     private boolean end = false;
     private String transitions = "";
-    private static final String[] numTransitions = {"T0", "T4", "T11", "T3", "T10", "TA", "T12", "T13", "T14", "T2", "T5", "T6", "T7", "T8", "T9"};
-    private static final boolean print = false;
+    private static final boolean print = true;
+    private static final boolean printDebug = false;
 
 
     public MonitorV2 (int packageNumber) {
@@ -29,6 +32,8 @@ public class MonitorV2 {
             quesWait.add (lock.newCondition ());
             boolQuesWait[i] = false;
         }
+
+        log = new Log(pn);
     }
 
     /**
@@ -65,25 +70,13 @@ public class MonitorV2 {
         }
     }
 
-    private void printSave (int index, int valueToReturn) {
-        if (print) {
-            if (valueToReturn > 0) {
-                System.out.println ("Hice disparo " + numTransitions[index]);
-            } else {
-                System.out.println ("No se puedo realizar el disparo " + numTransitions[index]);
-            }
-        }
-        if (valueToReturn > 0)
-            transitions += numTransitions[index];
-    }
-
     private void signalPoliticV2 () {
         int aux[] = pn.getSensitized ();
         for (int i = 0; i < 15; i++) {
-            if (print)
+            if (printDebug)
                 System.out.println ("COSO:" + i + "    " + boolQuesWait[i] + "  ---   " + aux[i]);
             if (aux[i] == 1 && boolQuesWait[i]) {
-                if (print)
+                if (printDebug)
                     System.out.println ("Wakeup: " + i);
                 quesWait.get (i).signal ();
                 return;
@@ -91,7 +84,7 @@ public class MonitorV2 {
         }
         if (pn.ifEnd ()) {
             end = true;
-            System.out.println ("I'm final boss, bro");
+            if (printDebug) System.out.println ("I'm final boss, bro");
             finalSignalPoliticV2 ();
         }
     }
@@ -107,10 +100,10 @@ public class MonitorV2 {
         int aux[] = pn.getSensitized ();
         int count = 0;
         for (boolean item : boolQuesWait) {
-            System.out.println ("index:" + count + "    " + item + "  ---   " + aux[count]);
+            if (printDebug) System.out.println ("index:" + count + "    " + item + "  ---   " + aux[count]);
             count++;
         }
-        System.out.println ("--------------------------------- 0 --------------------------------------------");
+        if(printDebug) System.out.println ("--------------------------------- 0 --------------------------------------------");
     }
 
     public int shoot (int index) {  //Dispara una transicion (index) devuelve 1 si pudo hacerla y 0 si no
@@ -121,18 +114,19 @@ public class MonitorV2 {
 
         while (true) {
             if (!(pn.isPos (shoot))) {
+
                 if (end) {
-                    System.out.println ("I must end my life: " + index);
+                    if(printDebug) System.out.println ("I must end my life: " + index);
                     lock.unlock ();
                     return -1;
                 }
-                System.out.println ("Don't shoot: " + index);
-                printSave (index, 0);
+
+                if (print) log.printFail(index);
 
                 signalPoliticV2 ();
                 boolQuesWait[index] = true;
-                if (print)
-                    showBoolQuesWait ();
+                if (printDebug) showBoolQuesWait ();
+
                 try {
                     quesWait.get (index).await ();
                 } catch (InterruptedException e1) {
@@ -140,12 +134,11 @@ public class MonitorV2 {
                 }
 
             } else {
-                System.out.println ("Shoot: " + index);
-                printSave (index, 1);
+                if (print) log.printSuccess(index);
 
                 boolQuesWait[index] = false;
-                if (print)
-                    showBoolQuesWait ();
+                if (printDebug) showBoolQuesWait ();
+
                 signalPoliticV2 ();
                 break;
             }
@@ -153,8 +146,6 @@ public class MonitorV2 {
 
         try {
             if (verifyMInvariants ()) {
-                System.out.println ("Mi invariantes: " + index);
-
                 lock.unlock ();
                 return 0;
             }
@@ -163,7 +154,7 @@ public class MonitorV2 {
             System.exit (1);
         }
 
-        System.out.println ("Unlock shoot: " + index);
+        if(printDebug) System.out.println ("Unlock shoot: " + index);
         lock.unlock ();
         return -1;
     }

@@ -2,47 +2,94 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.lang.String;
-import java.time.LocalDateTime;
-import java.util.concurrent.TimeUnit;
-/*
-public class Log implements Runnable {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
-    private String contenido;
-    private final CpuBuffer buff1;
-    private final CpuBuffer buff2;
-    private final CpuPower controller1;
-    private final CpuPower controller2;
-    private final CpuWork cpu1;
-    private final CpuWork cpu2;
+public class Log  {
 
+    private static String contenido;
+
+    private PN pn;
     private final static boolean print = false;
 
-    Log (CpuBuffer buffer1, CpuBuffer buffer2, CpuPower controller1, CpuPower controller2, CpuWork cpu1, CpuWork cpu2) {
-        this.buff1 = buffer1;
-        this.buff2 = buffer2;
-        this.controller1 = controller1;
-        this.controller2 = controller2;
-        //this.gd = gd;
-        this.cpu1 = cpu1;
-        this.cpu2 = cpu2;
+    private static final String[] numTransitions = {"T0", "T4", "T11", "T3", "T10", "TA", "T12", "T13", "T14", "T2", "T5", "T6", "T7", "T8", "T9"};
+    private ArrayList<Integer> useBufferList ;
+    private ArrayList<Integer> isBufferList ;
+    private static ArrayList<Integer> countBufferList;
+    private ArrayList<Integer> lastCountBufferList;
+
+    Log() {
+
     }
 
-
-    public void EscribirContenido () {
-        String estadoBuff;
-        String estadoCpu;
-        String estadoController;
-        estadoBuff = LocalDateTime.now () + " - El buffer 1 tiene " + buff1.size () + " elementos y el buffer 2 tiene " + buff2.size () + " elementos.";
-        contenido = contenido + estadoBuff + "\r\n";
-        estadoCpu = " - El estado del CPU 1" + " es " + cpu1.getState () + " y el estado del CPU 2 es " + cpu2.getState () + " \r\n";
-        contenido = contenido + estadoCpu;
-        estadoController = " - El estado del controlador 1" + " es " + controller1.getState () + " y el estado del controlador 2 es " + controller2.getState () + "\r\n";
-        contenido = contenido + estadoController;
-        //contenido = contenido + buff1.size() + " " + buff2.size() + "\n";
+    Log (PN pn) {
+        this.pn = pn;
+        initBuffers();
     }
 
-    public void GuardarArchivo () {
+    private void initBuffers(){
+        useBufferList = new ArrayList<>(Arrays.asList(pn.getUseBuffer()) );
+        isBufferList = new ArrayList<>(Arrays.asList(pn.getIsBuffer()) );
+        countBufferList = new ArrayList<>(Collections.nCopies(isBufferList.size(), 0));
+        lastCountBufferList = new ArrayList<>(Collections.nCopies(isBufferList.size(), 0));
+    }
+
+    public void printSuccess(int index) {
+        StringBuilder aux = new StringBuilder();
+        aux.append("Hice el disparo ").append(numTransitions[index]).append("\n");
+        System.out.print(aux);
+
+        contenido += aux;
+        print(index);
+    }
+
+    public void printFail(int index) {
+        StringBuilder aux = new StringBuilder();
+        aux.append("No se pudo realizar el disparo ").append(numTransitions[index]).append("\n");
+        System.out.print(aux);
+
+        contenido += aux;
+    }
+
+    private void print(int index){
+
+        if ( useBufferList.contains(index) ) {
+            StringBuilder aux = new StringBuilder();
+            int count = 0;
+
+            for ( int item : isBufferList ) {
+                int markVector = pn.getMarkVector()[item];
+                aux.append("El buffer ").append(count+1).append(" tiene ").append(markVector).append(" elementos").append("\n");
+                countBufferList(count, markVector);
+                count++;
+            }
+
+            System.out.print(aux);
+            contenido += aux;
+        }
+    }
+
+    private void countBufferList (int countIndex, int countBufferSize) {
+
+        if ( lastCountBufferList.get(countIndex) < countBufferSize ) {
+            int aux = countBufferList.get(countIndex) + 1;
+            countBufferList.set(countIndex, aux);
+        }
+
+        lastCountBufferList.set(countIndex, countBufferSize);
+    }
+
+    public void guardarArchivo () {
         try {
+            int count = 0;
+            for( Integer item : countBufferList ){
+                StringBuilder aux = new StringBuilder();
+                aux.append("Pasaron ").append(item).append(" elementos por el buffer ").append(count+1).append("\n");
+                count++;
+                contenido += aux;
+            }
+
             String ruta = "./log.txt";
             File file = new File (ruta);
             if (!file.exists ()) {
@@ -63,21 +110,6 @@ public class Log implements Runnable {
         }
     }
 
-    @Override
-    public void run () {
-        for (int j = 1; j <= 2000; j++) {
-            this.EscribirContenido ();
-            try {
-                TimeUnit.MILLISECONDS.sleep (25);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace ();
-                System.out.print ("Process Failed");
-            }
-        }
-        this.GuardarArchivo ();
 
-    }
 
 }
-*/

@@ -15,7 +15,7 @@ public class Main {
 
     private static void initProcess () {
         for (int i = 0; i < 9; i++) {
-            arrayTransitions.add (new ArrayList<Integer> ());
+            arrayTransitions.add (new ArrayList<> ());
         }
 
         arrayTransitions.get (0).add (10);
@@ -59,6 +59,7 @@ public class Main {
 
     public static void main (String[] args) {
         initProcess ();
+        new Log().guardarArchivo();
 
         try {
             File file = new File ("./prueba.txt");
