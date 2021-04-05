@@ -23,20 +23,29 @@ public class CPUProcess extends Thread {
     @Override
     public void run () {
         super.run ();
-        System.out.println ("Holaaaa :): " + processList.get (0));
+        //System.out.println ("Holaaaa :): " + processList.get (0));
 
+        int shootResult = 0;
         while (true) {
             for (int item : processList) {
-                if (monitor.shoot (item) == -1) {
+                shootResult = monitor.shoot(item);
+                if (shootResult == -1) {
                     System.out.println ("END: " + item);
                     return; //TODO: Esta mal. En realidad debería remover la transicion y hacer return solo cuando no queda ninguna.
                 }
+                else if(shootResult > 0){
 
-                try {
-                    sleep (20);
-                } catch (InterruptedException e) {
-                    e.printStackTrace ();
+                    System.out.println ("Quise disparar : " + item + " y me voy a dormir " + shootResult + " milisegundos");
+                    try {
+                        sleep(shootResult + 1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace ();
+                    }
+                    System.out.println ("Quise disparar : " + item + " y me desperte");
+                    monitor.shoot(item);
                 }
+
+
 
             }
         }

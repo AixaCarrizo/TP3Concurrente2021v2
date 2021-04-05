@@ -118,9 +118,11 @@ public class MonitorV2 {
 
         int[] shoot = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         shoot[index] = 1;
-
+        int shootResult = -1;
         while (true) {
-            if (!(pn.isPos (shoot))) {
+            shootResult = pn.isPos(shoot);
+            //if (!(pn.isPos (shoot))) {
+            if (shootResult < 0) {
                 if (end) {
                     System.out.println ("I must end my life: " + index);
                     lock.unlock ();
@@ -139,7 +141,7 @@ public class MonitorV2 {
                     e1.printStackTrace ();
                 }
 
-            } else {
+            } else if(shootResult == 0){
                 System.out.println ("Shoot: " + index);
                 printSave (index, 1);
 
@@ -149,11 +151,16 @@ public class MonitorV2 {
                 signalPoliticV2 ();
                 break;
             }
+            else{
+                System.out.println ("Quise disparar T" + index + "y tengo que esperar " + shootResult + "milisegundos\n");
+                lock.unlock();
+                return shootResult;
+            }
         }
 
         try {
             if (verifyMInvariants ()) {
-                System.out.println ("Mi invariantes: " + index);
+                //System.out.println ("Mi invariantes: " + index);
 
                 lock.unlock ();
                 return 0;
