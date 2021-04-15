@@ -131,18 +131,18 @@ public class PN {
         this.estados = 16;
         this.transiciones = 15;
 
-        this.sensitizedTime = new LocalTime []{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null};
-        for (int i = 0; i < transiciones; i++){
-            this.sensitizedTime[i] = LocalTime.now();
+        this.sensitizedTime = new LocalTime[]{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null};
+        for (int i = 0; i < transiciones; i++) {
+            this.sensitizedTime[i] = LocalTime.now ();
         }//inicializa los contadores de tiempo como si todas estuvisen sensibilizadas al empezar (?
         this.minTimeArrival = 25;
         this.minTimeSrv1 = 50;
         this.minTimeSrv2 = 50;
 
-        this.useBuffers       = new Integer[]{5, 13, 9, 14};
-        this.isBuffer         = new Integer[]{2, 3};
-        this.isGenTransition  = new Integer[]{0};
-        this.isAddBuffer      = new Integer[]{5, 13};
+        this.useBuffers = new Integer[]{5, 13, 9, 14};
+        this.isBuffer = new Integer[]{2, 3};
+        this.isGenTransition = new Integer[]{0};
+        this.isAddBuffer = new Integer[]{5, 13};
     }
 
 
@@ -176,45 +176,15 @@ public class PN {
         int temp;
         int[] aux = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-        aux = getSensitized();
-        int []oldSens = new int [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        for (int i = 0; i < transiciones; i++ ){
+        aux = getSensitized ();
+        int[] oldSens = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        for (int i = 0; i < transiciones; i++) {
             oldSens[i] = aux[i];
         }
         for (int m = 0; m < transiciones; m++) {
             if (aux[m] * index[m] > 0) aux[m] = 1; // sigma and Ex
             else aux[m] = 0; // Si no pongo el else, quedan los unos de la operacion anterior
         }
-
-        /*
-        //Calculo B
-        for (int m = 0; m < transiciones; m++) {
-            B[m] = 0;
-            for (int n = 0; n < estados; n++) {   // Si algun numero del nuevo vector de marcado es = 1, no puedo dispararla
-                //temp = H[m][i] * Q[i];    // Sumo para obtener el nuevo vector de desensibilizado
-                temp = H[m][n] * M[n];
-                B[m] = B[m] + temp; // B = 0 -> no se puede :(
-            }
-            if (B[m] == 0) {
-                B[m] = 1;
-            } else {
-                B[m] = 0;
-            }
-        }
-
-        // System.out.println("H x m: \n");
-        // printArray(B);
-
-        for (int m = 0; m < transiciones; m++) {
-            if (B[m] * E[m] > 0) aux[m] = 1; // B and E
-            if (aux[m] * index[m] > 0) aux[m] = 1; // sigma and Ex
-            else aux[m] = 0; // Si no pongo el else, quedan los unos de la operacion anterior
-        }
-
-        // System.out.println("sigma and Ex: \n");
-        //printArray(aux);
-
-         */
 
         int zeroCounter = 0; // Esto es para ver que lo que quiero y puedo disparar sea diferente de 0
         for (int m = 0; m < transiciones; m++) {
@@ -251,31 +221,31 @@ public class PN {
         // sensiblizado anterior con el actual)
 
 
-        LocalTime shootTime = LocalTime.now();
-        LocalTime transitionTime =  null;
-        for(int i = 0; i < transiciones; i++){
-            if(index[i] > 0){
+        LocalTime shootTime = LocalTime.now ();
+        LocalTime transitionTime = null;
+        for (int i = 0; i < transiciones; i++) {
+            if (index[i] > 0) {
                 if (i == 0 || i == 3 || i == 4) {
-                    switch (i){
+                    switch (i) {
                         case 0:
-                            transitionTime = sensitizedTime[i].plus(minTimeArrival, MILLIS);
+                            transitionTime = sensitizedTime[i].plus (minTimeArrival, MILLIS);
                             break;
                         case 3:
-                            transitionTime = sensitizedTime[i].plus(minTimeSrv1, MILLIS);
+                            transitionTime = sensitizedTime[i].plus (minTimeSrv1, MILLIS);
                             break;
                         case 4:
-                            transitionTime = sensitizedTime[i].plus(minTimeSrv2, MILLIS);
+                            transitionTime = sensitizedTime[i].plus (minTimeSrv2, MILLIS);
                             break;
                     }
                     //transitionTime = sensitizedTime[i].plus(minTime, MILLIS);
-                    if ( shootTime.isAfter(transitionTime) || shootTime.equals(transitionTime)) { //si el tiempo actual es mayor que el de sensibilizado + minTime
-                        sensitizedTime[i] = LocalTime.now(); //actualizo el tiempo de sensibilizado "para que vuelva a 0" (?
-                    }
-                    else {
-                        System.out.println("Quise disparar T" + i + " y estoy fuera del intervalo de tiempo\n");
+                    if (shootTime.isAfter (transitionTime) || shootTime.equals (transitionTime)) { //si el tiempo actual es mayor que el de sensibilizado + minTime
+                        sensitizedTime[i] = LocalTime.now (); //actualizo el tiempo de sensibilizado "para que vuelva a 0" (?
+                    } else {
+                        if (print)
+                            System.out.println ("Quise disparar T" + i + " y estoy fuera del intervalo de tiempo");
                         //System.out.println("shootTime: " + shootTime.toString() + "\n" + "TransitionTime: " + transitionTime.toString() + "\n");
                         //return false; //en realidad aca tendria que mandar la diferencia de tiempo que tiene que dormir
-                        return (int)(MILLIS.between(shootTime, transitionTime));
+                        return (int) (MILLIS.between (shootTime, transitionTime));
                     }
                 }
             }
@@ -283,18 +253,17 @@ public class PN {
         }
 
 
-
         this.M = mPrima;
         if (index[0] == 1) {
             packetCounter++;
         }
 
-        updateTimeStamps(oldSens); //le mando el vector de sensiblizado del marcado anterior
+        updateTimeStamps (oldSens); //le mando el vector de sensiblizado del marcado anterior
 
         return 0;
     }
 
-    public void updateTimeStamps(int [] oldSens){
+    public void updateTimeStamps (int[] oldSens) {
 
         for (int m = 0; m < transiciones; m++) {
             this.E[m] = 1;
@@ -316,15 +285,16 @@ public class PN {
             E[13] = 0;
 
 
-
-        int [] newSens = getSensitized();
-        System.out.println("Viejo sensiblizado: ");
-        printArray(oldSens);
-        System.out.println("Nuevo sensiblizado: ");
-        printArray(newSens);
-        for (int i = 0; i < transiciones; i++){
-            if( (newSens[i] > 0) && (newSens[i] != oldSens [i]) ){
-                sensitizedTime[i] = LocalTime.now();
+        int[] newSens = getSensitized ();
+        if (print) {
+            System.out.println ("Viejo sensiblizado: ");
+            printArray (oldSens);
+            System.out.println ("Nuevo sensiblizado: ");
+            printArray (newSens);
+        }
+        for (int i = 0; i < transiciones; i++) {
+            if ((newSens[i] > 0) && (newSens[i] != oldSens[i])) {
+                sensitizedTime[i] = LocalTime.now ();
             }
         }
     }
@@ -333,12 +303,12 @@ public class PN {
         return this.M;
     }
 
-    public void printArray (int [] array){
-        System.out.print("{ ");
-        for(int i : array){
-            System.out.print( i + " ");
+    public void printArray (int[] array) {
+        System.out.print ("{ ");
+        for (int i : array) {
+            System.out.print (i + " ");
         }
-        System.out.print("}\n");
+        System.out.print ("}\n");
     }
 
 
@@ -383,15 +353,15 @@ public class PN {
         return false;
     }
 
-    public Integer[] getUseBuffer() {
+    public Integer[] getUseBuffer () {
         return useBuffers;
     }
 
-    public Integer[] getIsBuffer() {
+    public Integer[] getIsBuffer () {
         return isBuffer;
     }
 
-    public Integer[] getCountBuffer() {
+    public Integer[] getCountBuffer () {
         return isAddBuffer;
     }
 }

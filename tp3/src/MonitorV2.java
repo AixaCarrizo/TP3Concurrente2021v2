@@ -33,7 +33,7 @@ public class MonitorV2 {
             boolQuesWait[i] = false;
         }
 
-        log = new Log(pn);
+        log = new Log (pn);
     }
 
     /**
@@ -103,7 +103,8 @@ public class MonitorV2 {
             if (printDebug) System.out.println ("index:" + count + "    " + item + "  ---   " + aux[count]);
             count++;
         }
-        if(printDebug) System.out.println ("--------------------------------- 0 --------------------------------------------");
+        if (printDebug)
+            System.out.println ("--------------------------------- 0 --------------------------------------------");
     }
 
     public int shoot (int index) {  //Dispara una transicion (index) devuelve 1 si pudo hacerla y 0 si no
@@ -125,7 +126,6 @@ public class MonitorV2 {
 
                 if (print) log.printFail (index);
 
-                signalPoliticV2 ();
                 boolQuesWait[index] = true;
                 if (printDebug) showBoolQuesWait ();
 
@@ -145,7 +145,7 @@ public class MonitorV2 {
                 signalPoliticV2 ();
                 break;
             } else {
-                System.out.println ("Quise disparar T" + index + "y tengo que esperar " + shootResult + "milisegundos\n");
+                System.out.println ("Quise disparar T" + index + " y tengo que esperar " + shootResult + "ms");
                 lock.unlock ();
                 return shootResult;
             }
@@ -162,7 +162,7 @@ public class MonitorV2 {
             System.exit (1);
         }
 
-        if(printDebug) System.out.println ("Unlock shoot: " + index);
+        if (printDebug) System.out.println ("Unlock shoot: " + index);
         lock.unlock ();
         return -1;
     }

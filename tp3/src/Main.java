@@ -59,7 +59,7 @@ public class Main {
 
     public static void main (String[] args) {
         initProcess ();
-        new Log().guardarArchivo();
+        new Log ().guardarArchivo ();
 
         try {
             File file = new File ("./prueba.txt");

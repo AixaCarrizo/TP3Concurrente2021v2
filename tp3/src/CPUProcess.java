@@ -28,23 +28,21 @@ public class CPUProcess extends Thread {
         int shootResult = 0;
         while (true) {
             for (int item : processList) {
-                shootResult = monitor.shoot(item);
+                shootResult = monitor.shoot (item);
                 if (shootResult == -1) {
                     System.out.println ("END: " + item);
                     return; //TODO: Esta mal. En realidad debería remover la transicion y hacer return solo cuando no queda ninguna.
-                }
-                else if(shootResult > 0){
+                } else if (shootResult > 0) {
 
-                    System.out.println ("Quise disparar : " + item + " y me voy a dormir " + shootResult + " milisegundos");
+                    //System.out.println ("Quise disparar T" + item + " y me voy a dormir " + shootResult + " milisegundos");
                     try {
-                        sleep(shootResult + 1);
+                        sleep (shootResult + 1);
                     } catch (InterruptedException e) {
                         e.printStackTrace ();
                     }
-                    System.out.println ("Quise disparar : " + item + " y me desperte");
-                    monitor.shoot(item);
+                    //System.out.println ("Quise disparar T" + item + " y me desperte");
+                    monitor.shoot (item);
                 }
-
 
 
             }
