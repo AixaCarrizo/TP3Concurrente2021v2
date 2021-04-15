@@ -1,3 +1,8 @@
+import java.time.LocalTime;
+
+import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.time.temporal.ChronoUnit.SECONDS;
+
 public class PN {
     private int[] M;
     private int[] B;
@@ -6,6 +11,10 @@ public class PN {
     private int[][] Ineg;
     private int[][] H;
     private int[] E;
+    private LocalTime[] sensitizedTime;
+    private int minTimeArrival;
+    private int minTimeSrv1;
+    private int minTimeSrv2;
 
     private Integer[] useBuffers;
     private Integer[] isBuffer;
@@ -122,6 +131,14 @@ public class PN {
         this.estados = 16;
         this.transiciones = 15;
 
+        this.sensitizedTime = new LocalTime []{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null};
+        for (int i = 0; i < transiciones; i++){
+            this.sensitizedTime[i] = LocalTime.now();
+        }//inicializa los contadores de tiempo como si todas estuvisen sensibilizadas al empezar (?
+        this.minTimeArrival = 25;
+        this.minTimeSrv1 = 50;
+        this.minTimeSrv2 = 50;
+
         this.useBuffers       = new Integer[]{5, 13, 9, 14};
         this.isBuffer         = new Integer[]{2, 3};
         this.isGenTransition  = new Integer[]{0};
@@ -129,7 +146,7 @@ public class PN {
     }
 
 
-    public boolean isPos (int[] index) {
+    public int isPos (int[] index) {
 
         String M_name[] = new String[]{"Active", "Active_2", "CPU_buffer", "CPU_buffer 2", "CPU_ON", "CPU_ON_2", "Idle", "Idle_2", "P0", "P1", "P13", "P6", "Power_up", "Power_up_2", "Stand_by", "Stand_by_2"};
 
@@ -159,6 +176,17 @@ public class PN {
         int temp;
         int[] aux = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+        aux = getSensitized();
+        int []oldSens = new int [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        for (int i = 0; i < transiciones; i++ ){
+            oldSens[i] = aux[i];
+        }
+        for (int m = 0; m < transiciones; m++) {
+            if (aux[m] * index[m] > 0) aux[m] = 1; // sigma and Ex
+            else aux[m] = 0; // Si no pongo el else, quedan los unos de la operacion anterior
+        }
+
+        /*
         //Calculo B
         for (int m = 0; m < transiciones; m++) {
             B[m] = 0;
@@ -186,12 +214,14 @@ public class PN {
         // System.out.println("sigma and Ex: \n");
         //printArray(aux);
 
+         */
+
         int zeroCounter = 0; // Esto es para ver que lo que quiero y puedo disparar sea diferente de 0
         for (int m = 0; m < transiciones; m++) {
             if (aux[m] != 0) zeroCounter++;
         }
         if (zeroCounter == 0)
-            return false;
+            return -1;
 
         // I * aux  (n x m * m x 1 = n x 1)
 
@@ -213,23 +243,102 @@ public class PN {
             if (print)
                 System.out.println (mPrima[n] + " " + M_name[n] + "\n");
             if (mPrima[n] < 0) {
-                return false;
+                return -1;
             }
         }
+
+        //inserte aqui funcion magica para actualizar los timestamps de transiciones que se sensibilizaron (tendria que comparar
+        // sensiblizado anterior con el actual)
+
+
+        LocalTime shootTime = LocalTime.now();
+        LocalTime transitionTime =  null;
+        for(int i = 0; i < transiciones; i++){
+            if(index[i] > 0){
+                if (i == 0 || i == 3 || i == 4) {
+                    switch (i){
+                        case 0:
+                            transitionTime = sensitizedTime[i].plus(minTimeArrival, MILLIS);
+                            break;
+                        case 3:
+                            transitionTime = sensitizedTime[i].plus(minTimeSrv1, MILLIS);
+                            break;
+                        case 4:
+                            transitionTime = sensitizedTime[i].plus(minTimeSrv2, MILLIS);
+                            break;
+                    }
+                    //transitionTime = sensitizedTime[i].plus(minTime, MILLIS);
+                    if ( shootTime.isAfter(transitionTime) || shootTime.equals(transitionTime)) { //si el tiempo actual es mayor que el de sensibilizado + minTime
+                        sensitizedTime[i] = LocalTime.now(); //actualizo el tiempo de sensibilizado "para que vuelva a 0" (?
+                    }
+                    else {
+                        System.out.println("Quise disparar T" + i + " y estoy fuera del intervalo de tiempo\n");
+                        //System.out.println("shootTime: " + shootTime.toString() + "\n" + "TransitionTime: " + transitionTime.toString() + "\n");
+                        //return false; //en realidad aca tendria que mandar la diferencia de tiempo que tiene que dormir
+                        return (int)(MILLIS.between(shootTime, transitionTime));
+                    }
+                }
+            }
+
+        }
+
+
 
         this.M = mPrima;
         if (index[0] == 1) {
             packetCounter++;
         }
-        return true;
+
+        updateTimeStamps(oldSens); //le mando el vector de sensiblizado del marcado anterior
+
+        return 0;
     }
 
-    public boolean isMarked (int index) {
-        return ((this.M[index] != 0)); // Devuelve false si no hay nada en esa plaza y viceversa
+    public void updateTimeStamps(int [] oldSens){
+
+        for (int m = 0; m < transiciones; m++) {
+            this.E[m] = 1;
+
+            for (int n = 0; n < estados; n++) {
+                if (M[n] - Ineg[n][m] < 0) {
+                    E[m] = 0;
+                    break;
+                }
+            }
+        }
+        // TODO: COMPROBAR SI ESTA BIEN ACA
+        // Limitacion de generacion de datos (T0)
+        if (packetCounter == dataNumber)
+            E[0] = 0;
+        if (M[2] >= 10)
+            E[5] = 0;
+        if (M[3] >= 10)
+            E[13] = 0;
+
+
+
+        int [] newSens = getSensitized();
+        System.out.println("Viejo sensiblizado: ");
+        printArray(oldSens);
+        System.out.println("Nuevo sensiblizado: ");
+        printArray(newSens);
+        for (int i = 0; i < transiciones; i++){
+            if( (newSens[i] > 0) && (newSens[i] != oldSens [i]) ){
+                sensitizedTime[i] = LocalTime.now();
+            }
+        }
     }
 
     public int[] getMarkVector () {
         return this.M;
+    }
+
+    public void printArray (int [] array){
+        System.out.print("{ ");
+        for(int i : array){
+            System.out.print( i + " ");
+        }
+        System.out.print("}\n");
     }
 
 

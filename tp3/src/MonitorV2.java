@@ -111,17 +111,19 @@ public class MonitorV2 {
 
         int[] shoot = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         shoot[index] = 1;
+        int shootResult = -1;
 
         while (true) {
-            if (!(pn.isPos (shoot))) {
+            shootResult = pn.isPos (shoot);
+            if (shootResult < 0) {
 
                 if (end) {
-                    if(printDebug) System.out.println ("I must end my life: " + index);
+                    if (printDebug) System.out.println ("I must end my life: " + index);
                     lock.unlock ();
                     return -1;
                 }
 
-                if (print) log.printFail(index);
+                if (print) log.printFail (index);
 
                 signalPoliticV2 ();
                 boolQuesWait[index] = true;
@@ -133,16 +135,22 @@ public class MonitorV2 {
                     e1.printStackTrace ();
                 }
 
-            } else {
-                if (print) log.printSuccess(index);
+            } else if (shootResult == 0) {
+                System.out.println ("Shoot: " + index);
+                if (print) log.printSuccess (index);
 
                 boolQuesWait[index] = false;
-                if (printDebug) showBoolQuesWait ();
-
+                if (print)
+                    showBoolQuesWait ();
                 signalPoliticV2 ();
                 break;
+            } else {
+                System.out.println ("Quise disparar T" + index + "y tengo que esperar " + shootResult + "milisegundos\n");
+                lock.unlock ();
+                return shootResult;
             }
         }
+
 
         try {
             if (verifyMInvariants ()) {

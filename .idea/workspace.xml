@@ -4,7 +4,6 @@
     <list default="true" id="28e40359-25fb-4d8f-9a52-21b7776d5a6f" name="Default Changelist" comment="Puto Juan.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tp3/src/CPUProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/tp3/src/CPUProcess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tp3/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/tp3/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tp3/src/MonitorV2.java" beforeDir="false" afterPath="$PROJECT_DIR$/tp3/src/MonitorV2.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tp3/src/PN.java" beforeDir="false" afterPath="$PROJECT_DIR$/tp3/src/PN.java" afterDir="false" />
     </list>
@@ -67,17 +66,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="JarApplication">
       <option name="ALTERNATIVE_JRE_PATH" />
       <method v="2" />
@@ -97,6 +85,8 @@
       <workItem from="1616903387050" duration="6008000" />
       <workItem from="1616909453592" duration="830000" />
       <workItem from="1617057556756" duration="10642000" />
+      <workItem from="1617662363982" duration="1850000" />
+      <workItem from="1618522407955" duration="1182000" />
     </task>
     <servers />
   </component>
