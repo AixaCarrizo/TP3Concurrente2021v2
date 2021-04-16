@@ -14,6 +14,7 @@ public class MonitorV2 {
     private boolean[] boolQuesWait = new boolean[numberTransitions];
 
     private Log log;
+    private Politica politica;
     private final PN pn;
 
     private boolean end = false;
@@ -34,6 +35,7 @@ public class MonitorV2 {
         }
 
         log = new Log (pn);
+        politica = new Politica (pn);
     }
 
     /**
@@ -71,17 +73,12 @@ public class MonitorV2 {
     }
 
     private void signalPoliticV2 () {
-        int aux[] = pn.getSensitized ();
-        for (int i = 0; i < 15; i++) {
-            if (printDebug)
-                System.out.println ("COSO:" + i + "    " + boolQuesWait[i] + "  ---   " + aux[i]);
-            if (aux[i] == 1 && boolQuesWait[i]) {
-                if (printDebug)
-                    System.out.println ("Wakeup: " + i);
-                quesWait.get (i).signal ();
-                return;
-            }
+        int t =politica.signalPolitic (boolQuesWait);
+        if(t!=-1) {
+            quesWait.get (t).signal ();
+            return;
         }
+
         if (pn.ifEnd ()) {
             end = true;
             if (printDebug) System.out.println ("I'm final boss, bro");
