@@ -26,6 +26,11 @@ public class Politica {
             else
                 return addBuffer[1];
         }
+        if(aux[6] == 1 && boolQuesWait[6])
+            return 6;
+        if(aux[10]== 1 && boolQuesWait[10])
+            return 10;
+
         for (int i = 0; i < 15; i++) {
             if (aux[i] == 1 && boolQuesWait[i] && i!=5 && i!=13) {
                 return i;

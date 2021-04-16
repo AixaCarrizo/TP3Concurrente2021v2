@@ -5,7 +5,7 @@ import java.lang.String;
 import java.util.ArrayList;
 
 public class Main {
-    private final static int dataNumber = 20;
+    private final static int dataNumber = 100;
     private static ArrayList<CPUProcess> processThread = new ArrayList<CPUProcess> ();
     private static ArrayList<ArrayList<Integer>> arrayTransitions = new ArrayList<ArrayList<Integer>> ();
 
