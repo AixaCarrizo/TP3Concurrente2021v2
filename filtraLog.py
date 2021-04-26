@@ -4,7 +4,7 @@ import re
 buffer1 = []
 buffer2 = []
 
-for i in open("log.txt","r"):
+for i in open("outRun.txt","r"):
    
    algo = i.find("tiene ")
   
