@@ -135,9 +135,9 @@ public class PN {
         for (int i = 0; i < transiciones; i++) {
             this.sensitizedTime[i] = LocalTime.now ();
         }//inicializa los contadores de tiempo como si todas estuvisen sensibilizadas al empezar (?
-        this.minTimeArrival = 25;
-        this.minTimeSrv1 = 50;
-        this.minTimeSrv2 = 50;
+        this.minTimeArrival = 20;
+        this.minTimeSrv1 = 30;
+        this.minTimeSrv2 = 30;
 
         this.useBuffers = new Integer[]{5, 13, 9, 14};
         this.isBuffer = new Integer[]{2, 3};

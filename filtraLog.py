@@ -4,16 +4,22 @@ import re
 buffer1 = []
 buffer2 = []
 
-for i in open("outRun.txt","r"):
+
+for i in open("log.txt","r"):
    
-   algo = i.find("tiene ")
-  
-   if(algo>0):
-     aux = i[algo+6:]
-     buffer1.append(aux[:aux.index(" elementos")])
-     aux2 = aux[(aux.find("tiene ")+6):]
-     buffer2.append(aux2[:aux2.index(" eleme")])
-     
+    algo = i.find("El buffer 1 tiene ")
+
+    if(algo>=0):
+        aux = i[18]
+        buffer1.append(aux)
+
+    else:
+        otroAlgo = i.find("El buffer 2 tiene ")
+        if(otroAlgo>=0):
+            aux = i[18]
+            buffer2.append(aux)
+
+
 buffer1 = list(map(lambda x: int(x),buffer1))
 buffer2 = list(map(lambda x: int(x),buffer2))
 
