@@ -177,6 +177,8 @@ public class PN {
         int[] aux = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
         aux = getSensitized ();
+
+
         int[] oldSens = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         for (int i = 0; i < transiciones; i++) {
             oldSens[i] = aux[i];
