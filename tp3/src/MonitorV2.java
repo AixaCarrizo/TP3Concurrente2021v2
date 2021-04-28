@@ -112,7 +112,10 @@ public class MonitorV2 {
         int shootResult = -1;
 
         while (true) {
+
+
             shootResult = pn.isPos (shoot);
+
             if (shootResult < 0) {
 
                 if (end) {

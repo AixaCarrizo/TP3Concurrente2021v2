@@ -135,9 +135,9 @@ public class PN {
         for (int i = 0; i < transiciones; i++) {
             this.sensitizedTime[i] = LocalTime.now ();
         }//inicializa los contadores de tiempo como si todas estuvisen sensibilizadas al empezar (?
-        this.minTimeArrival = 20;
-        this.minTimeSrv1 = 30;
-        this.minTimeSrv2 = 30;
+        this.minTimeArrival = 10;
+        this.minTimeSrv1 = 20;
+        this.minTimeSrv2 = 60;
 
         this.useBuffers = new Integer[]{5, 13, 9, 14};
         this.isBuffer = new Integer[]{2, 3};
@@ -216,10 +216,6 @@ public class PN {
                 return -1;
             }
         }
-
-        //inserte aqui funcion magica para actualizar los timestamps de transiciones que se sensibilizaron (tendria que comparar
-        // sensiblizado anterior con el actual)
-
 
         LocalTime shootTime = LocalTime.now ();
         LocalTime transitionTime = null;
