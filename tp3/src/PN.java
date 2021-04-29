@@ -135,9 +135,9 @@ public class PN {
         for (int i = 0; i < transiciones; i++) {
             this.sensitizedTime[i] = LocalTime.now ();
         }//inicializa los contadores de tiempo como si todas estuvisen sensibilizadas al empezar (?
-        this.minTimeArrival = 10;
-        this.minTimeSrv1 = 20;
-        this.minTimeSrv2 = 60;
+        this.minTimeArrival = 25;
+        this.minTimeSrv1 = 50;
+        this.minTimeSrv2 = 50;
 
         this.useBuffers = new Integer[]{5, 13, 9, 14};
         this.isBuffer = new Integer[]{2, 3};
@@ -150,10 +150,9 @@ public class PN {
 
         String M_name[] = new String[]{"Active", "Active_2", "CPU_buffer", "CPU_buffer 2", "CPU_ON", "CPU_ON_2", "Idle", "Idle_2", "P0", "P1", "P13", "P6", "Power_up", "Power_up_2", "Stand_by", "Stand_by_2"};
 
-        // Calculo E
-        for (int m = 0; m < transiciones; m++) {
+        // Calculo E (vector de sensibilizado)
+        for (int m = 0; m < transiciones; m++) { //para eliminar problemas de bucles en t5 y t12
             this.E[m] = 1;
-
             for (int n = 0; n < estados; n++) {
                 if (M[n] - Ineg[n][m] < 0) {
                     E[m] = 0;
@@ -161,32 +160,33 @@ public class PN {
                 }
             }
         }
-        // TODO: COMPROBAR SI ESTA BIEN ACA
+
         // Limitacion de generacion de datos (T0)
-        if (packetCounter == dataNumber)
+        if (packetCounter == dataNumber) //desensibiliza T0 si ya termino de generar paquetes
             E[0] = 0;
-        if (M[2] >= 10)
+        if (M[2] >= 10) //limite buffer 1
             E[5] = 0;
-        if (M[3] >= 10)
+        if (M[3] >= 10) //limite buffer 2
             E[13] = 0;
 
         // System.out.println("E: \n");
         //printArray(E);
 
         int temp;
-        int[] aux = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        int[] aux = getSensitized();// vector de sensibilizadas y no inhibidas
 
-        aux = getSensitized ();
+        int[] oldSens = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; //se usa despues para actualizar timestamps
 
-
-        int[] oldSens = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         for (int i = 0; i < transiciones; i++) {
             oldSens[i] = aux[i];
         }
+
         for (int m = 0; m < transiciones; m++) {
             if (aux[m] * index[m] > 0) aux[m] = 1; // sigma and Ex
             else aux[m] = 0; // Si no pongo el else, quedan los unos de la operacion anterior
         }
+
+        //en aux quedan las transiciones que puedo y quiero lanzar
 
         int zeroCounter = 0; // Esto es para ver que lo que quiero y puedo disparar sea diferente de 0
         for (int m = 0; m < transiciones; m++) {
@@ -314,15 +314,15 @@ public class PN {
         int temp;
         int[] aux = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-        //Calculo B
+        //Calculo B (vector de desensibilizado)
         for (int m = 0; m < transiciones; m++) {
             B[m] = 0;
             for (int n = 0; n < estados; n++) {   // Si algun numero del nuevo vector de marcado es = 1, no puedo dispararla
                 //temp = H[m][i] * Q[i];    // Sumo para obtener el nuevo vector de desensibilizado
                 temp = H[m][n] * M[n];
-                B[m] = B[m] + temp; // B = 0 -> no se puede :(
+                B[m] = B[m] + temp; // B = 1 -> no se puede :(
             }
-            if (B[m] == 0) {
+            if (B[m] == 0) { //B negado
                 B[m] = 1;
             } else {
                 B[m] = 0;
@@ -336,7 +336,7 @@ public class PN {
             if (B[m] * E[m] > 0) aux[m] = 1; // B and E
             else aux[m] = 0; // Si no pongo el else, quedan los unos de la operacion anterior
         }
-        return aux;
+        return aux; //devuelve vector de sensibilizadas y no inhibidas
     }
 
     public boolean ifEnd () {

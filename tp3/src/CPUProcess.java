@@ -12,18 +12,10 @@ public class CPUProcess extends Thread {
         this.processList = processList;
     }
 
-    /*
-    public CPUProcess(MonitorV2 monitor, int process){
-        this.monitor = monitor;
-        this.processList = new ArrayList<>();
-        this.processList.add(process);
-    }
-    */
 
     @Override
     public void run () {
         super.run ();
-        //System.out.println ("Holaaaa :): " + processList.get (0));
 
         int shootResult = 0;
         while (true) {
@@ -31,7 +23,7 @@ public class CPUProcess extends Thread {
                 shootResult = monitor.shoot (item);
                 if (shootResult == -1) {
                     System.out.println ("END: " + item);
-                    return; //TODO: Esta mal. En realidad debería remover la transicion y hacer return solo cuando no queda ninguna.
+                    return;
                 } else if (shootResult > 0) {
 
                     //System.out.println ("Quise disparar T" + item + " y me voy a dormir " + shootResult + " milisegundos");

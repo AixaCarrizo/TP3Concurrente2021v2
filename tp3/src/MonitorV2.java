@@ -11,7 +11,7 @@ public class MonitorV2 {
 
     private static Lock lock = new ReentrantLock ();
     private List<Condition> quesWait = new ArrayList<Condition> ();
-    private boolean[] boolQuesWait = new boolean[numberTransitions];
+    private boolean[] boolQuesWait = new boolean[numberTransitions]; //false = no esta esperando , true = esta esperando
 
     private Log log;
     private Politica politica;
@@ -73,27 +73,27 @@ public class MonitorV2 {
     }
 
     private void signalPoliticV2 () {
-        int t =politica.signalPolitic (boolQuesWait);
+        int t =politica.signalPolitic (boolQuesWait); //devuelve el indice de la transicion donde esta el hilo a despertar
         if(t!=-1) {
             quesWait.get (t).signal ();
             return;
         }
 
-        if (pn.ifEnd ()) {
+        if (pn.ifEnd ()) { // si la politica devuelve -1 es porque no pudo despertar a nadie, me fijo si tengo que terminar
             end = true;
             if (printDebug) System.out.println ("I'm final boss, bro");
             finalSignalPoliticV2 ();
         }
     }
 
-    private void finalSignalPoliticV2 () {
+    private void finalSignalPoliticV2 () { //despierta a los hilos para terminar la ejecucion
         for (int i = 0; i < 15; i++) {
             quesWait.get (i).signal ();
-            boolQuesWait[i] = false; // TODO: Ta al pedo pero queda lindo
+            boolQuesWait[i] = false;
         }
     }
 
-    private void showBoolQuesWait () {
+    private void showBoolQuesWait () { //imprime cuales transiciones estan dormidas //TODO: preguntarle a belen que hace esto
         int aux[] = pn.getSensitized ();
         int count = 0;
         for (boolean item : boolQuesWait) {
@@ -105,6 +105,7 @@ public class MonitorV2 {
     }
 
     public int shoot (int index) {  //Dispara una transicion (index) devuelve 1 si pudo hacerla y 0 si no
+
         lock.lock ();
 
         int[] shoot = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -112,7 +113,6 @@ public class MonitorV2 {
         int shootResult = -1;
 
         while (true) {
-
 
             shootResult = pn.isPos (shoot);
 
@@ -126,7 +126,7 @@ public class MonitorV2 {
 
                 if (print) log.printFail (index);
 
-                boolQuesWait[index] = true;
+                boolQuesWait[index] = true; //se queda esperando en la transicion que quiso disparar
                 if (printDebug) showBoolQuesWait ();
 
                 try {
@@ -142,9 +142,9 @@ public class MonitorV2 {
                 boolQuesWait[index] = false;
                 if (print)
                     showBoolQuesWait ();
-                signalPoliticV2 ();
+                signalPoliticV2 (); //despierta un hilo
                 break;
-            } else {
+            } else { // si no le dio ni 0 ni -1 es porque era alguna transicion temporizada
                 System.out.println ("Quise disparar T" + index + " y tengo que esperar " + shootResult + "ms");
                 lock.unlock ();
                 return shootResult;
