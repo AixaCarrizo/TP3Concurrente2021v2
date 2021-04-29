@@ -93,7 +93,7 @@ public class MonitorV2 {
         }
     }
 
-    private void showBoolQuesWait () { //imprime cuales transiciones estan dormidas //TODO: preguntarle a belen que hace esto
+    private void showBoolQuesWait () { //imprime si las transiciones estan sensibilizadas o no y dormidas o no
         int aux[] = pn.getSensitized ();
         int count = 0;
         for (boolean item : boolQuesWait) {

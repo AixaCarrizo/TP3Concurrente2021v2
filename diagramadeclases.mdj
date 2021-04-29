@@ -6698,7 +6698,8 @@
 									"_parent": {
 										"$ref": "AAAAAAF5E08j+TG5+OE="
 									},
-									"name": "int countIndex"
+									"name": "int countIndex",
+									"type": ""
 								},
 								{
 									"_type": "UMLParameter",
@@ -6706,7 +6707,8 @@
 									"_parent": {
 										"$ref": "AAAAAAF5E08j+TG5+OE="
 									},
-									"name": "int countBufferSize"
+									"name": "int countBufferSize",
+									"type": ""
 								},
 								{
 									"_type": "UMLParameter",
@@ -7355,7 +7357,8 @@
 									"_parent": {
 										"$ref": "AAAAAAF3+kDPtk6OdUE="
 									},
-									"name": "int [] index"
+									"name": "int [] index",
+									"type": ""
 								},
 								{
 									"_type": "UMLParameter",
@@ -7429,7 +7432,8 @@
 									"_parent": {
 										"$ref": "AAAAAAF5E2fQM1Mgvdg="
 									},
-									"name": "int[] oldSens"
+									"name": "int[] oldSens",
+									"type": ""
 								},
 								{
 									"_type": "UMLParameter",
