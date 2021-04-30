@@ -5,19 +5,27 @@ buffer1 = []
 buffer2 = []
 
 
-for i in open("log.txt","r"):
+for i in open("./logs/log15.txt","r"):
    
     algo = i.find("El buffer 1 tiene ")
 
+
     if(algo>=0):
-        aux = i[18]
-        buffer1.append(aux)
+        i = i[18:]
+        for temp in i.split():
+            if temp.isdigit():
+                aux = temp
+                buffer1.append(aux)
+
 
     else:
         otroAlgo = i.find("El buffer 2 tiene ")
         if(otroAlgo>=0):
-            aux = i[18]
-            buffer2.append(aux)
+            i = i[18:]
+            for temp in i.split():
+                if temp.isdigit():
+                    aux = temp
+                    buffer2.append(aux)
 
 
 buffer1 = list(map(lambda x: int(x),buffer1))
