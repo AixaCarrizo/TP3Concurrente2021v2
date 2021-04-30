@@ -162,18 +162,15 @@ public class PN {
         }
 
         // Limitacion de generacion de datos (T0)
-        if (packetCounter == dataNumber) //desensibiliza T0 si ya termino de generar paquetes
+        if (packetCounter == dataNumber) // Fesensibiliza T0 si ya termino de generar paquetes
             E[0] = 0;
-        if (M[2] >= 10) //limite buffer 1
+        if (M[2] >= 10) // Limite buffer 1
             E[5] = 0;
-        if (M[3] >= 10) //limite buffer 2
+        if (M[3] >= 10) // Limite buffer 2
             E[13] = 0;
 
-        // System.out.println("E: \n");
-        //printArray(E);
-
         int temp;
-        int[] aux = getSensitized();// vector de sensibilizadas y no inhibidas
+        int[] aux = getSensitized ();// Vector de sensibilizadas y no inhibidas
 
         int[] oldSens = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; //se usa despues para actualizar timestamps
 
@@ -186,7 +183,7 @@ public class PN {
             else aux[m] = 0; // Si no pongo el else, quedan los unos de la operacion anterior
         }
 
-        //en aux quedan las transiciones que puedo y quiero lanzar
+        // En aux quedan las transiciones que puedo y quiero lanzar
 
         int zeroCounter = 0; // Esto es para ver que lo que quiero y puedo disparar sea diferente de 0
         for (int m = 0; m < transiciones; m++) {
@@ -235,14 +232,12 @@ public class PN {
                             transitionTime = sensitizedTime[i].plus (minTimeSrv2, MILLIS);
                             break;
                     }
-                    //transitionTime = sensitizedTime[i].plus(minTime, MILLIS);
+                    // TransitionTime = sensitizedTime[i].plus(minTime, MILLIS);
                     if (shootTime.isAfter (transitionTime) || shootTime.equals (transitionTime)) { //si el tiempo actual es mayor que el de sensibilizado + minTime
                         sensitizedTime[i] = LocalTime.now (); //actualizo el tiempo de sensibilizado "para que vuelva a 0" (?
                     } else {
                         if (print)
                             System.out.println ("Quise disparar T" + i + " y estoy fuera del intervalo de tiempo");
-                        //System.out.println("shootTime: " + shootTime.toString() + "\n" + "TransitionTime: " + transitionTime.toString() + "\n");
-                        //return false; //en realidad aca tendria que mandar la diferencia de tiempo que tiene que dormir
                         return (int) (MILLIS.between (shootTime, transitionTime));
                     }
                 }
@@ -256,7 +251,7 @@ public class PN {
             packetCounter++;
         }
 
-        updateTimeStamps (oldSens); //le mando el vector de sensiblizado del marcado anterior
+        updateTimeStamps (oldSens); // Le mando el vector de sensiblizado del marcado anterior
 
         return 0;
     }
@@ -273,7 +268,7 @@ public class PN {
                 }
             }
         }
-        // TODO: COMPROBAR SI ESTA BIEN ACA
+
         // Limitacion de generacion de datos (T0)
         if (packetCounter == dataNumber)
             E[0] = 0;
@@ -314,7 +309,7 @@ public class PN {
         int temp;
         int[] aux = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-        //Calculo B (vector de desensibilizado)
+        // Calculo B (vector de desensibilizado)
         for (int m = 0; m < transiciones; m++) {
             B[m] = 0;
             for (int n = 0; n < estados; n++) {   // Si algun numero del nuevo vector de marcado es = 1, no puedo dispararla
@@ -322,15 +317,12 @@ public class PN {
                 temp = H[m][n] * M[n];
                 B[m] = B[m] + temp; // B = 1 -> no se puede :(
             }
-            if (B[m] == 0) { //B negado
+            if (B[m] == 0) { // B negado
                 B[m] = 1;
             } else {
                 B[m] = 0;
             }
         }
-
-        // System.out.println("H x m: \n");
-        // printArray(B);
 
         for (int m = 0; m < transiciones; m++) {
             if (B[m] * E[m] > 0) aux[m] = 1; // B and E

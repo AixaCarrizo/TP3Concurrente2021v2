@@ -3,7 +3,6 @@ import java.util.ArrayList;
 public class Politica {
 
     private static String contenido;
-
     private PN pn;
     private int aux[];
     private Integer listBuff[], addBuffer[];
@@ -13,8 +12,8 @@ public class Politica {
 
     Politica (PN pn) {
         this.pn = pn;
-        listBuff = pn.getIsBuffer (); //devuelve los indices de las marcas de los buffers
-        addBuffer = pn.getCountBuffer (); //devuelve las transiciones que alimentan los buffers
+        listBuff = pn.getIsBuffer (); // Devuelve los indices de las marcas de los buffers
+        addBuffer = pn.getCountBuffer (); // Devuelve las transiciones que alimentan los buffers
     }
 
     public int signalPolitic (boolean[] boolQuesWait) {
@@ -22,10 +21,9 @@ public class Politica {
         if (boolQuesWait[addBuffer[0]] && boolQuesWait[addBuffer[1]] && aux[addBuffer[0]] == 1) {
             markVector = pn.getMarkVector ();
 
-            if (markVector[listBuff[0]] < markVector[listBuff[1]]){
+            if (markVector[listBuff[0]] < markVector[listBuff[1]]) {
                 return addBuffer[0];
-            }
-            else if(markVector[listBuff[0]] >= markVector[listBuff[1]]){
+            } else if (markVector[listBuff[0]] >= markVector[listBuff[1]]) {
                 return addBuffer[1];
             }
 
@@ -37,11 +35,10 @@ public class Politica {
             return 10;
          */
         for (int i = 0; i < 15; i++) {
-            if (aux[i] == 1 && boolQuesWait[i] && i!=5 && i!=13) {
+            if (aux[i] == 1 && boolQuesWait[i] && i != 5 && i != 13) {
                 return i;
             }
         }
         return -1;
     }
-
 }

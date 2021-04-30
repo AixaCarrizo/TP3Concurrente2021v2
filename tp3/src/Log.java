@@ -20,7 +20,6 @@ public class Log {
     private ArrayList<Integer> lastCountBufferList;
 
     Log () {
-
     }
 
     Log (PN pn) {
@@ -53,7 +52,6 @@ public class Log {
     }
 
     private void print (int index) {
-
         if (useBufferList.contains (index)) {
             StringBuilder aux = new StringBuilder ();
             int count = 0;
@@ -71,12 +69,10 @@ public class Log {
     }
 
     private void countBufferList (int countIndex, int countBufferSize) {
-
         if (lastCountBufferList.get (countIndex) < countBufferSize) {
             int aux = countBufferList.get (countIndex) + 1;
             countBufferList.set (countIndex, aux);
         }
-
         lastCountBufferList.set (countIndex, countBufferSize);
     }
 

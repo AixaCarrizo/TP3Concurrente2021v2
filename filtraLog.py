@@ -5,7 +5,7 @@ buffer1 = []
 buffer2 = []
 
 
-for i in open("./logs/log15.txt","r"):
+for i in open("./log.txt","r"):
    
     algo = i.find("El buffer 1 tiene ")
 

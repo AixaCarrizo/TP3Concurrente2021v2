@@ -17,7 +17,6 @@ public class Main {
 
 
     private static void initProcess () {
-
         for (int i = 0; i < 9; i++) {
             arrayTransitions.add (new ArrayList<> ());
         }
@@ -62,9 +61,8 @@ public class Main {
 
 
     public static void main (String[] args) {
-
-        String timeStamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
-        System.out.println(timeStamp);
+        String timeStamp = new SimpleDateFormat ("yyyy/MM/dd HH:mm:ss").format (new Date ());
+        System.out.println (timeStamp);
 
         initProcess ();
         new Log ().guardarArchivo ();
@@ -82,9 +80,7 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace ();
         }
-        timeStamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
-        System.out.println(timeStamp);
+        timeStamp = new SimpleDateFormat ("yyyy/MM/dd HH:mm:ss").format (new Date ());
+        System.out.println (timeStamp);
     }
-
-
 }
